@@ -13,7 +13,7 @@ import ShinyText from './components/ui/ShinyText';
 import CyberSarcophagus from './components/ui/CyberSarcophagus';
 import { curriculumData } from './data';
 import { Lesson, GradeLevel } from './types';
-import { Cpu, Wifi, Shield, Zap } from 'lucide-react';
+import { Cpu, Wifi, Shield, Zap, Github } from 'lucide-react';
 
 const App: React.FC = () => {
   // Navigation Refs
@@ -190,14 +190,26 @@ const App: React.FC = () => {
                         打造永不掉线的数字陵墓，让您的身后事尽在掌握。
                     </p>
 
-                    <button 
-                        onClick={() => scrollToSection('list')}
-                        className="group relative px-8 py-3 bg-white text-black rounded-full font-bold overflow-hidden transition-transform hover:scale-105"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">
-                            浏览产品系列
-                        </span>
-                    </button>
+                    <div className="flex flex-wrap gap-4 justify-center">
+                        <button 
+                            onClick={() => scrollToSection('list')}
+                            className="group relative px-8 py-3 bg-white text-black rounded-full font-bold overflow-hidden transition-transform hover:scale-105 shadow-lg hover:shadow-white/20"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                浏览产品系列
+                            </span>
+                        </button>
+
+                        <a 
+                            href="https://github.com/EazyLee30/EBYZ"
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="group relative px-8 py-3 bg-white/5 text-white border border-white/20 rounded-full font-bold overflow-hidden transition-all hover:scale-105 hover:bg-white/10 hover:border-white/40 flex items-center gap-2 backdrop-blur-sm"
+                        >
+                            <Github size={20} />
+                            <span>GitHub 仓库</span>
+                        </a>
+                    </div>
                 </motion.div>
               </motion.div>
               
