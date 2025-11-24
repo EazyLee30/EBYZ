@@ -5,8 +5,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/atom-one-dark.css'; // Import code highlight style
-// @ts-ignore
-import knowledgeBase from '@/src/data/knowledge.json'; // RAG Data
 
 const Oracle: React.FC = () => {
   const [input, setInput] = useState('');
@@ -26,8 +24,16 @@ const Oracle: React.FC = () => {
       // Determine model based on complexity, using flash for quick responses
       const modelName = 'gemini-2.5-flash'; 
       
-      // RAG Context Injection
-      const knowledgeContext = knowledgeBase.map(k => `[Source: ${k.filename}]\n${k.content}`).join('\n\n');
+      // RAG Context Injection with dynamic import
+      let knowledgeContext = '';
+      try {
+         // @ts-ignore
+         const kb = await import('@/src/data/knowledge.json');
+         const data = kb.default || kb;
+         knowledgeContext = (data as any[] || []).map(k => `[Source: ${k.filename}]\n${k.content.substring(0, 2000)}...`).join('\n\n');
+      } catch (e) {
+         console.warn('Failed to load knowledge base for oracle', e);
+      }
 
       const prompt = `
       角色设定：你是“人均嬴政白皮书”的智能助手，名叫“秦大爷”。你是一个精通OpenWrt, Home Assistant, Zigbee, MQTT的物联网专家，但你的说话风格非常幽默、讽刺，喜欢用“棺材”、“陵墓”、“陪葬品”来比喻智能家居设备。

@@ -6,8 +6,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/atom-one-dark.css';
-// @ts-ignore
-import knowledgeBase from '@/src/data/knowledge.json';
 
 interface Props {
   lesson: Lesson;
@@ -36,15 +34,21 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       const ai = new GoogleGenAI({ apiKey });
       const model = 'gemini-2.5-flash';
       
-      // RAG Context: Retrieve relevant info from knowledge base
-      // Simple context injection: include first 5000 chars of relevant docs or all if small
-      // Ideally this would be a vector search, but for static site we dump relevant text.
-      const knowledgeContext = (knowledgeBase as any[] || []).map(k => {
-         if (k.content.includes(module.grade) || k.content.includes('物联网') || k.content.includes('控制')) {
-             return `[参考资料: ${k.filename}]\n${k.content.substring(0, 3000)}...`; // Truncate to avoid token limits
-         }
-         return '';
-      }).filter(Boolean).join('\n\n');
+      // RAG Context: Retrieve relevant info from knowledge base using dynamic import
+      let knowledgeContext = '';
+      try {
+         // @ts-ignore
+         const kb = await import('@/src/data/knowledge.json');
+         const data = kb.default || kb;
+         knowledgeContext = (data as any[] || []).map(k => {
+            if (k.content.includes(module.grade) || k.content.includes('物联网') || k.content.includes('控制')) {
+                return `[参考资料: ${k.filename}]\n${k.content.substring(0, 3000)}...`; // Truncate to avoid token limits
+            }
+            return '';
+         }).filter(Boolean).join('\n\n');
+      } catch (e) {
+         console.warn('Failed to load knowledge base', e);
+      }
 
       const prompt = `
       请为初中信息科技课程生成一份幽默、暗黑科技风格的“教案”。
