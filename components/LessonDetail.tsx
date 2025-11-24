@@ -92,15 +92,24 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       4. **风格要求**：在保持教案专业性的同时，使用“陵墓”、“陪葬品”、“符咒”等词汇进行幽默隐喻，但逻辑必须严密，技术必须准确。
       `;
 
-      const result = await ai.models.generateContent({
-        model: model,
-        contents: prompt,
+      // Use Vercel Serverless Proxy to avoid Network/Region blocks
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
       });
 
+      if (!response.ok) {
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
       setAiContent(result.text || '冥界信号微弱，请稍后再试...');
     } catch (error) {
       console.error(error);
-      setAiContent('通灵仪式中断（API Connection Failed）。请检查您的 VITE_GEMINI_API_KEY 是否已配置。');
+      setAiContent('通灵仪式中断（API Connection Failed）。请检查您的网络连接或确认 VITE_GEMINI_API_KEY 配置。');
     } finally {
       setLoading(false);
     }
