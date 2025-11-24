@@ -102,14 +102,15 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       });
 
       if (!response.ok) {
-          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.error || `API Error: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
       setAiContent(result.text || '冥界信号微弱，请稍后再试...');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      setAiContent('通灵仪式中断（API Connection Failed）。请检查您的网络连接或确认 VITE_GEMINI_API_KEY 配置。');
+      setAiContent(`通灵仪式中断：${error.message || '未知错误'}。请检查 Vercel 环境变量或网络连接。`);
     } finally {
       setLoading(false);
     }

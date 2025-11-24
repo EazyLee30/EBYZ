@@ -56,15 +56,26 @@ const Oracle: React.FC = () => {
       - 保持“秦大爷”的人设，自称“朕”或“本大爷”。
       `;
 
-      const result = await ai.models.generateContent({
-        model: modelName,
-        contents: prompt,
+      // Use Vercel Serverless Proxy to avoid Network/Region blocks
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
       });
 
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
       setResponse(result.text || '朕今日乏了，改日再问。');
-    } catch (error) {
+
+    } catch (error: any) {
       console.error(error);
-      setResponse('**通信链路（通灵仪式）中断**，请检查API Key是否已焚烧到位。');
+      setResponse(`**通信链路（通灵仪式）中断**：${error.message || '未知错误'}。请检查 Vercel 环境变量或网络连接。`);
     } finally {
       setLoading(false);
     }
