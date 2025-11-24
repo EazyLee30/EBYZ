@@ -17,8 +17,9 @@ const Oracle: React.FC = () => {
     setResponse('');
 
     try {
-      // Use standard Vite env var
-      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+      // Safe API key access (Support VITE_ prefix and legacy defines)
+      // @ts-ignore
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY || '';
       const ai = new GoogleGenAI({ apiKey });
       
       // Determine model based on complexity, using flash for quick responses

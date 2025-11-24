@@ -24,8 +24,9 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
     setLoading(true);
     
     try {
-      // Safe API key access for Vite
-      const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || ''; 
+      // Safe API key access for Vite (Support VITE_ prefix and legacy defines)
+      // @ts-ignore
+      const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.API_KEY || ''; 
       if (!apiKey) {
           setAiContent('（通灵失败：未配置 API Key，请联系管理员焚烧相关凭证）');
           return;
