@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skull, Download, Book, Shield, Map } from 'lucide-react';
+import { Skull, Download, Book, Shield, Map, Github } from 'lucide-react';
 
 interface Props {
   onNavClick: (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper') => void;
@@ -59,6 +59,17 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
              >
                 阅读白皮书
              </button>
+             
+             <a
+                href="https://github.com/EazyLee30/EBYZ"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full hover:bg-white/5 text-gray-400 hover:text-white transition-colors"
+                title="GitHub Repository"
+             >
+                <Github size={20} />
+             </a>
+
              <button 
                 onClick={onDownload}
                 className="bg-white/10 hover:bg-emperor-gold hover:text-black text-white text-xs font-bold py-2 px-4 rounded-full transition-all flex items-center gap-2"

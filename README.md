@@ -41,24 +41,28 @@
 
 ## 👁️ 页面预览 (Visual Tour)
 
-*(以下为概念演示，实际效果请运行项目查看)*
-
 ### 1. 首页概览 (The Mausoleum)
 赛博朋克风格的视觉入口，动态光标与流体背景。
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1200&auto=format&fit=crop" alt="Home Page Concept" width="800" style="border-radius: 10px; border: 1px solid #333;">
+  <img src="assets/screenshots/home-hero.png" alt="Home Page" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
 ### 2. 课程大纲 (Curriculum Matrix)
 左侧 Spotlight 视觉索引，右侧详情列表，一一对应的物理布局。
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Curriculum Page Concept" width="800" style="border-radius: 10px; border: 1px solid #333;">
+  <img src="assets/screenshots/curriculum-overview.png" alt="Curriculum Overview" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
-### 3. 问政殿 (The Oracle)
+### 3. 课程详情 (Lesson Detail)
+沉浸式教学详情页，包含 AI 生成教案与互动演示。
+<div align="center">
+  <img src="assets/screenshots/lesson-detail.png" alt="Lesson Detail" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 4. 问政殿 (The Oracle)
 集成 Google Gemini 的 AI 智能助手，解答关于 OpenWrt 与 Zigbee 的“生死难题”。
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=1200&auto=format&fit=crop" alt="Oracle Interface Concept" width="800" style="border-radius: 10px; border: 1px solid #333;">
+  <img src="assets/screenshots/oracle-interface.png" alt="Oracle Interface" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
 ---
@@ -99,4 +103,4 @@ npm run build
 
 ## 📄 许可证
 
-本项目为私有项目。禁止用于非教学用途的盗墓活动。
+[MIT License](LICENSE)
