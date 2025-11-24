@@ -39,6 +39,25 @@
 
 ---
 
+## 🧠 技术原理与创新 (Technical Innovation)
+
+本项目不仅仅是一个前端展示页面，更集成了前沿的 AI 与物联网技术概念。
+
+### 1. RAG (检索增强生成) 驱动的智能教案
+我们构建了一个本地知识库，包含教育部发布的**义务教育信息科技课程标准**（6-8年级）。当用户请求生成教案时，系统会：
+1.  **检索 (Retrieve)**：根据当前课程的年级和知识点，从 `knowledge.json` 中检索对应的教学目标、核心素养要求。
+2.  **增强 (Augment)**：将检索到的官方标准作为“上下文”注入到 Prompt 中。
+3.  **生成 (Generate)**：调用 **Google Gemini 2.5 Flash** 模型，生成一份既符合官方标准，又带有“智能棺材”暗黑幽默风格的教案。
+
+### 2. 全栈物联网架构隐喻
+我们将复杂的物联网技术栈映射到“陵墓”场景中，帮助学生理解：
+*   **OpenWrt (软路由)** = **陵墓网关**：确保在断网（阴阳两隔）情况下，局域网（地宫内部）依然存活。
+*   **Home Assistant (中枢)** = **守陵人/大脑**：统筹管理所有 Zigbee/WiFi 设备（陪葬品）。
+*   **MQTT (协议)** = **通灵符咒**：轻量级发布/订阅协议，即使在网络极差的环境下也能传递消息（遗嘱）。
+*   **Zigbee (协议)** = **红绳/长明灯**：低功耗、Mesh组网，确保传感器千年不掉线。
+
+---
+
 ## 👁️ 页面预览 (Visual Tour)
 
 ### 1. 首页概览 (The Mausoleum)
@@ -54,7 +73,7 @@
 </div>
 
 ### 3. 课程详情 (Lesson Detail)
-沉浸式教学详情页，包含 AI 生成教案与互动演示。
+沉浸式教学详情页，包含 **RAG 增强** 的 AI 教案生成功能。支持一键生成 PDF 格式的“通灵卷轴”。
 <div align="center">
   <img src="assets/screenshots/lesson-detail.png" alt="Lesson Detail" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
@@ -88,8 +107,13 @@
    npm run dev
    ```
 
-### 构建生产版本
+### 构建知识库 (RAG)
+如果更新了 `knowledge_base/` 下的 PDF 文件，需要重新生成索引：
+```bash
+npm run extract
+```
 
+### 构建生产版本
 ```bash
 npm run build
 ```
@@ -97,9 +121,12 @@ npm run build
 ## 🧱 技术栈
 
 - **Core**: React 19, TypeScript, Vite
+- **AI & RAG**: 
+  - Google Generative AI SDK (Gemini 2.5 Flash)
+  - PDF Parsing & Text Extraction
+  - Context Injection
 - **Styling**: Tailwind CSS, Framer Motion (Animations)
-- **AI Integration**: Google Generative AI SDK (Gemini 2.5 Flash)
-- **Icons**: Lucide React
+- **Utilities**: html2pdf.js (PDF Export), React Markdown
 
 ## 📄 许可证
 
