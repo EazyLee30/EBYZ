@@ -60,16 +60,22 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       
       课程标题: ${lesson.coffinTitle}
       原课程标题: ${lesson.originalTitle}
+      所在年级: ${module.grade}
       描述: ${lesson.description}
       模块技术栈: ${module.techStack.join(', ')}
       
       请遵循以下规则：
       1. **必须使用中文回答**。
-      2. 使用Markdown格式结构化输出（包含 ## 标题, **加粗**, - 列表, 代码块）。
+      2. 使用Markdown格式结构化输出。
       3. 风格要幽默、讽刺，用“棺材”、“陵墓”、“陪葬品”等词汇比喻现代智能家居设备。
-      4. 结合参考知识库中的教学目标和核心概念，确保教学内容的准确性。
+      4. **【教学目标】必须写三条，且每条都必须遵循严格的句法结构：**
+         - 结构：“经历/通过……（学习过程或方法），习得/理解……（结果），完成/形成……（表现）”。
+         - 结合参考知识库中${module.grade}的教学要求。
+         - 第一条侧重结果（预期学习结果）。
+         - 第二条侧重过程（学习的过程与方法）。
+         - 第三条侧重表现（达成目标的具体表现）。
       5. 教案结构应包含：
-         - 【教学目标】(Objectives)
+         - 【教学目标】(Objectives) - 务必符合上述三要素结构。
          - 【法器准备】(Materials)
          - 【教学仪式】(Procedure)
          - 【代码符咒】(Code Example, Python/C++/YAML)
