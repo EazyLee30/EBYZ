@@ -1,105 +1,142 @@
-
 import React, { forwardRef } from 'react';
-import { Server, Wifi, Smartphone, Database, Lock } from 'lucide-react';
-import { techStackData } from '../data';
+import { motion } from 'framer-motion';
+import { Database, Server, Smartphone, Cloud, Radio, Cpu, Lock, ShieldCheck } from 'lucide-react';
 
 const ArchitectureDiagram = forwardRef<HTMLDivElement>((props, ref) => {
   return (
-    <div ref={ref} className="py-12 bg-[#151515]">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-2xl font-bold text-white mb-2">地下宫殿拓扑图 (Tomb Blueprint)</h2>
-          <p className="text-gray-500 text-sm">基于OpenWrt与Home Assistant的本地化私有云架构</p>
+    <div ref={ref} className="relative w-full max-w-5xl mx-auto p-4 md:p-12 overflow-hidden perspective-1000">
+      
+      {/* 3D Container */}
+      <motion.div 
+        initial={{ rotateX: 10, opacity: 0 }}
+        whileInView={{ rotateX: 0, opacity: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="relative z-10 grid gap-16"
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        
+        {/* Layer 1: User / Physical Layer */}
+        <div className="relative flex justify-center gap-12 z-30">
+            <Node icon={Smartphone} label="生者终端" sub="App / H5" color="text-blue-400" />
+            <Node icon={Radio} label="祭祀传感器" sub="Zigbee / LoRa" color="text-yellow-400" />
+            <Node icon={Cpu} label="嵌入式墓碑" sub="ESP32 / RISC-V" color="text-green-400" />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Perception Layer */}
-          <div className="border border-gray-700 rounded-xl p-6 relative bg-[#1a1a1a]">
-            <div className="absolute -top-3 left-4 bg-blue-900 text-blue-200 text-xs px-2 py-1 rounded">感知层 (Perception)</div>
-            <div className="space-y-4 mt-2">
-              <div className="flex items-center gap-3 text-gray-300 p-3 bg-gray-800 rounded-lg border border-gray-700">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span>Zigbee 温湿度传感器 (尸身保鲜)</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-300 p-3 bg-gray-800 rounded-lg border border-gray-700">
-                <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-                <span>红外人体传感器 (防盗墓入侵)</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-300 p-3 bg-gray-800 rounded-lg border border-gray-700">
-                <div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></div>
-                <span>继电器执行器 (控制棺盖/空调)</span>
-              </div>
-            </div>
-          </div>
+        {/* Animated Data Streams (SVG) */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+             <DataStream x1="30%" y1="12%" x2="50%" y2="45%" delay={0} />
+             <DataStream x1="50%" y1="12%" x2="50%" y2="45%" delay={1} />
+             <DataStream x1="70%" y1="12%" x2="50%" y2="45%" delay={2} />
+        </div>
 
-          {/* Network/Processing Layer */}
-          <div className="border border-emperor-gold rounded-xl p-6 relative bg-[#252010]">
-            <div className="absolute -top-3 left-4 bg-emperor-gold text-black font-bold text-xs px-2 py-1 rounded">核心层 (Core)</div>
-            <div className="flex flex-col gap-4 mt-2">
-               <div className="flex items-center justify-between p-4 bg-gray-800 rounded-lg border border-gray-600">
-                  <div className="flex items-center gap-3">
-                    <Server className="text-emperor-gold" />
-                    <div>
-                      <div className="text-white font-bold">OpenWrt Gateway</div>
-                      <div className="text-xs text-gray-400">软路由网关</div>
+        {/* Layer 2: Edge / Gateway Layer (The Core) */}
+        <div className="relative flex justify-center z-20">
+            <div className="relative p-1 bg-gradient-to-b from-emperor-gold/50 to-transparent rounded-2xl backdrop-blur-xl">
+                 <div className="absolute inset-0 bg-emperor-gold/20 blur-3xl rounded-full animate-pulse-slow"></div>
+                 <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="relative bg-[#0a0a0a] border border-emperor-gold/50 rounded-xl p-8 w-64 text-center shadow-[0_0_50px_rgba(212,175,55,0.15)]"
+                 >
+                    <Server size={48} className="mx-auto text-emperor-gold mb-4 animate-float" />
+                    <h3 className="text-xl font-bold text-white mb-2">OpenWrt Gateway</h3>
+                    <p className="text-xs text-gray-400">本地雾计算节点</p>
+                    <p className="text-[10px] text-gray-600 mt-1 font-mono">MQTT Broker / Nginx</p>
+                    
+                    {/* Status Lights */}
+                    <div className="flex justify-center gap-2 mt-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping delay-75"></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping delay-150"></span>
                     </div>
-                  </div>
-                  <div className="text-xs bg-black text-emperor-gold px-2 py-1 rounded">主脑</div>
-               </div>
-
-               <div className="flex justify-center">
-                  <div className="h-8 w-0.5 bg-gray-600"></div>
-               </div>
-
-               <div className="flex items-center justify-between p-4 bg-blue-900/20 rounded-lg border border-blue-800">
-                  <div className="flex items-center gap-3">
-                    <Database className="text-blue-400" />
-                    <div>
-                      <div className="text-white font-bold">Home Assistant</div>
-                      <div className="text-xs text-gray-400">MQTT Broker + 自动化逻辑</div>
-                    </div>
-                  </div>
-                  <div className="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">中枢</div>
-               </div>
+                 </motion.div>
             </div>
-          </div>
-
-          {/* Application Layer */}
-          <div className="border border-gray-700 rounded-xl p-6 relative bg-[#1a1a1a]">
-            <div className="absolute -top-3 left-4 bg-green-900 text-green-200 text-xs px-2 py-1 rounded">应用层 (Application)</div>
-            <div className="space-y-4 mt-2">
-               <div className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg border border-gray-700">
-                  <Smartphone className="text-white" />
-                  <div className="text-gray-300">
-                    <div className="font-bold">Apple HomeKit</div>
-                    <div className="text-xs text-gray-500">后代语音控制 ("Hey Siri")</div>
-                  </div>
-               </div>
-               <div className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg border border-gray-700">
-                  <Lock className="text-red-400" />
-                  <div className="text-gray-300">
-                    <div className="font-bold">米家 (Mi Home)</div>
-                    <div className="text-xs text-gray-500">远程报警与监控</div>
-                  </div>
-               </div>
-            </div>
-          </div>
         </div>
 
-        {/* Protocols Legend */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {techStackData.map((tech, idx) => (
-            <div key={idx} className="bg-[#222] p-4 rounded-lg border border-gray-800">
-              <h4 className="text-emperor-gold font-bold text-sm mb-1">{tech.name}</h4>
-              <p className="text-gray-400 text-xs">{tech.description}</p>
-            </div>
-          ))}
+        {/* Animated Data Streams (Down) */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+             <DataStream x1="50%" y1="55%" x2="30%" y2="85%" delay={1.5} reverse />
+             <DataStream x1="50%" y1="55%" x2="70%" y2="85%" delay={2.5} reverse />
         </div>
-      </div>
+
+        {/* Layer 3: Cloud / Afterlife Layer */}
+        <div className="relative flex justify-center gap-24 z-10">
+            <Node icon={Cloud} label="冥府私有云" sub="Docker K8s" color="text-purple-400" />
+            <Node icon={Database} label="灵魂数据库" sub="PostgreSQL" color="text-pink-400" />
+            <Node icon={ShieldCheck} label="因果防火墙" sub="AI Audit" color="text-red-400" />
+        </div>
+
+      </motion.div>
+
+      {/* Background Decor */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.05)_0%,_transparent_70%)] pointer-events-none"></div>
     </div>
   );
 });
 
 ArchitectureDiagram.displayName = 'ArchitectureDiagram';
+
+// Subcomponents
+
+const Node = ({ icon: Icon, label, sub, color }: { icon: any, label: string, sub: string, color: string }) => (
+    <motion.div 
+        whileHover={{ y: -5 }}
+        className="flex flex-col items-center p-4 rounded-xl bg-[#111] border border-white/5 backdrop-blur-sm min-w-[120px]"
+    >
+        <div className={`p-3 rounded-full bg-white/5 mb-3 ${color} border border-white/5 shadow-inner`}>
+            <Icon size={24} />
+        </div>
+        <h4 className="text-sm font-bold text-gray-200">{label}</h4>
+        <span className="text-[10px] text-gray-600 font-mono mt-1">{sub}</span>
+    </motion.div>
+);
+
+const DataStream = ({ x1, y1, x2, y2, delay = 0, reverse = false }: { x1: string, y1: string, x2: string, y2: string, delay?: number, reverse?: boolean }) => {
+    // Generate a unique ID for the gradient
+    const gradientId = `gradient-${Math.random().toString(36).substr(2, 9)}`;
+    
+    return (
+        <svg className="absolute inset-0 w-full h-full overflow-visible">
+            <defs>
+                <linearGradient id={gradientId} gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="transparent" />
+                    <stop offset="50%" stopColor={reverse ? "#8b5cf6" : "#D4AF37"} /> {/* Gold or Purple */}
+                    <stop offset="100%" stopColor="transparent" />
+                </linearGradient>
+            </defs>
+            {/* Base Path */}
+            <path 
+                d={`M ${x1} ${y1} C ${x1} ${parseInt(y1) + 20}%, ${x2} ${parseInt(y2) - 20}%, ${x2} ${y2}`}
+                fill="none"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="1"
+                strokeDasharray="5 5"
+            />
+            {/* Animated Packet */}
+            <motion.circle 
+                r="3" 
+                fill={reverse ? "#a78bfa" : "#FCD34D"}
+                initial={{ offsetDistance: "0%" }}
+                animate={{ offsetDistance: "100%" }}
+                transition={{ 
+                    duration: 3, 
+                    repeat: Infinity, 
+                    delay: delay,
+                    ease: "linear"
+                }}
+                style={{ 
+                    offsetPath: `path("M ${x1} ${y1} C ${x1} ${parseInt(y1) + 20}%, ${x2} ${parseInt(y2) - 20}%, ${x2} ${y2}")`
+                } as any} 
+            >
+                <animate 
+                    attributeName="opacity" 
+                    values="0;1;0" 
+                    dur="3s" 
+                    repeatCount="indefinite"
+                    begin={`${delay}s`}
+                />
+            </motion.circle>
+        </svg>
+    );
+};
 
 export default ArchitectureDiagram;

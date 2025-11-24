@@ -1,7 +1,55 @@
+import { CurriculumModule, GradeLevel, TechComponent, LessonContent, Lesson } from './types';
 
-import { CurriculumModule, GradeLevel, TechComponent } from './types';
+// Helper to generate default content based on lesson metadata
+const generateDefaultContent = (grade: GradeLevel, lessonTitle: string, description: string): LessonContent => {
+  const isG6 = grade.includes('六年级');
+  const isG7 = grade.includes('七年级');
+  
+  const objectives = [
+    `掌握${lessonTitle}的核心概念与技术原理。`,
+    `能够将"${description}"中的场景转化为技术实现方案。`,
+    `培养在极端环境（陵墓/阴间）下的系统稳定性思维。`
+  ];
 
-export const curriculumData: CurriculumModule[] = [
+  const materials = [
+    '智能棺材开发板 (ESP32/Raspberry Pi)',
+    '冥府通信模块 (LoRa/Zigbee)',
+    '传感器套件 (红外/超声波/温湿度)',
+    '虚拟仿真环境 (Home Assistant)'
+  ];
+
+  const procedure = [
+    { step: '场景引入 (5 mins)', detail: `通过"${description}"引入课题，讨论为何在陵墓中需要此功能。` },
+    { step: '技术解构 (10 mins)', detail: `分析${lessonTitle}背后的技术原理（如传感器读取、协议传输）。` },
+    { step: '实战演练 (20 mins)', detail: '学生分组进行代码编写或设备连接，模拟实现该功能。' },
+    { step: '系统测试 (10 mins)', detail: '模拟极端情况（如断电、断网、诈尸），测试系统的可靠性。' }
+  ];
+
+  let safetyWarning = '⚠️ 警告：实验过程中请勿随意念诵未知的咒语代码，以免触发系统自毁。';
+  
+  if (isG6) {
+    objectives.push('理解输入-计算-输出的基本控制逻辑。');
+    safetyWarning = '⚠️ 警告：调试机关时请保持安全距离，防止被误伤。';
+  } else if (isG7) {
+    materials.push('局域网服务器');
+    objectives.push('理解网络协议在数据传输中的作用。');
+    safetyWarning = '⚠️ 警告：请勿扫描不明来源的二维码冥币，防止中了勒索病毒。';
+  } else {
+    materials.push('Zigbee网关', 'MQTT服务器');
+    objectives.push('掌握物联网系统的集成与联动。');
+    safetyWarning = '⚠️ 警告：万物互联意味着万物皆可被黑，请确保防火墙已开启。';
+  }
+
+  return {
+    objectives,
+    materials,
+    duration: '45 分钟',
+    procedure,
+    safetyWarning
+  };
+};
+
+const rawCurriculumData: CurriculumModule[] = [
   {
     id: 'g6-control',
     grade: GradeLevel.Six,
@@ -18,6 +66,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u1',
         title: '第一单元：初识过程与控制 (Tomb Mechanics 101)',
+        // Mechanical gears
+        imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1000&auto=format&fit=crop', 
         lessons: [
           { id: 'l1', originalTitle: '设备控制处处在', coffinTitle: '机关陷阱处处有', description: '识别墓室中的长明灯、断龙石等控制设备。' },
           { id: 'l2', originalTitle: '一分为二开与关', coffinTitle: '阴阳两隔开与关', description: '理解墓门的“开”与“关”状态切换。' },
@@ -28,6 +78,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u2',
         title: '第二单元：数据运算有逻辑 (Logic of the Trap)',
+        // Circuit board dark
+        imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l5', originalTitle: '连续变化的数据', coffinTitle: '尸气浓度的连续监测', description: '理解连续量：墓室内汞蒸气浓度的变化。' },
           { id: 'l6', originalTitle: '开关量的真与假', coffinTitle: '活人与死人的真假', description: '开关量：生命体征信号（0=死，1=活）。' },
@@ -38,6 +90,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u3',
         title: '第三单元：有了反馈更优化 (Feedback for Preservation)',
+        // Thermometer / Gauge
+        imageUrl: 'https://images.unsplash.com/photo-1555421689-491a97ff2040?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l9', originalTitle: '从人工到自动化', coffinTitle: '从守陵人到自动哨兵', description: '对比人工巡逻与自动红外巡逻的区别。' },
           { id: 'l10', originalTitle: '开环控制应用广', coffinTitle: '定时祭祀系统', description: '开环控制：设定每逢初一十五自动播放哀乐，不检测是否有人听。' },
@@ -48,6 +102,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u4',
         title: '第四单元：控制系统的描述 (System Architecture)',
+        // Blueprint / Architecture
+        imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l13', originalTitle: '控制系统有特点', coffinTitle: '陵墓系统的整体性', description: '分析地宫水银循环系统的整体架构。' },
           { id: 'l14', originalTitle: '复杂系统可分解', coffinTitle: '地宫分区的子系统', description: '将陵墓分解为：防御子系统、照明子系统、排水子系统。' },
@@ -57,6 +113,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u5',
         title: '第五单元：智能种植有方法 (Smart Fungus Cultivation)',
+        // Dark forest / Nature
+        imageUrl: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l16', originalTitle: '智能种植初探秘', coffinTitle: '尸香魔芋培育计划', description: '在墓室中种植防腐防盗的特殊植物。' },
           { id: 'l17', originalTitle: '设计我的种植园', coffinTitle: '设计我的陪葬花园', description: '规划地下生态系统的布局。' },
@@ -67,6 +125,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u6',
         title: '第六单元：电梯运行的控制 (Sarcophagus Lift)',
+        // Elevator shaft
+        imageUrl: 'https://images.unsplash.com/photo-1535295972055-1c762f4483e5?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l20', originalTitle: '找找电梯子系统', coffinTitle: '升棺发财子系统', description: '分析将棺材从地底升至地面的升降机结构。' },
           { id: 'l21', originalTitle: '到达指定的楼层', coffinTitle: '停在吉时的刻度', description: '控制升降机停在风水最好的高度。' },
@@ -77,6 +137,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u7',
         title: '第七单元：汽车里的小奥秘 (The Hearse Secrets)',
+        // Car dashboard dark
+        imageUrl: 'https://images.unsplash.com/photo-1494905998402-395d579af36f?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l24', originalTitle: '自动熄灭转向灯', coffinTitle: '灵车自动引路灯', description: '灵车转弯时引魂灯的自动控制。' },
           { id: 'l25', originalTitle: '安全带未系提醒', coffinTitle: '尸体固定提醒', description: '检测尸体是否在运输中发生位移。' },
@@ -87,6 +149,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u8',
         title: '第八单元：自主可控与安全 (Tomb Sovereignty)',
+        // Lock / Security
+        imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l28', originalTitle: '使用系统讲安全', coffinTitle: '机关操作规范', description: '防止守陵人误触自毁机关。' },
           { id: 'l29', originalTitle: '避免故障保安全', coffinTitle: '千年不腐的可靠性', description: '设计冗余系统，确保千年后机关仍能触发。' },
@@ -111,6 +175,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u1',
         title: '第一单元：探寻互联网新世界 (The Digital Afterlife)',
+        // Fiber optics / Network
+        imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l1', originalTitle: '互联网发展靠创新', coffinTitle: '冥网发展靠烧纸', description: '了解从“托梦”到“数字孪生”的通信发展史。' },
           { id: 'l2', originalTitle: '互联网应用新特征', coffinTitle: '云祭祀应用新特征', description: '体验在线烧香、VR扫墓等新应用。' },
@@ -120,6 +186,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u2',
         title: '第二单元：直播网络我来建 (Live from the Crypt)',
+        // Server cables / Matrix
+        imageUrl: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l4', originalTitle: '数据分包灵活传', coffinTitle: '纸钱分包灵活烧', description: '理解数据包：将大额冥币拆分传输的原理。' },
           { id: 'l5', originalTitle: '网络协议分层设', coffinTitle: '阴阳通信分层仪', description: 'TCP/IP模型：物理层(火盆)->应用层(托梦)。' },
@@ -133,6 +201,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u3',
         title: '第三单元：便捷的互联网服务 (Services for Spirits)',
+        // Cloud concept / Data
+        imageUrl: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l11', originalTitle: '互联网服务应用广', coffinTitle: '阴间服务应用广', description: '介绍FTP（贡品传输）、SMTP（写信给先人）。' },
           { id: 'l12', originalTitle: '万维网服务大揭秘', coffinTitle: '生死簿数据大揭秘', description: 'WWW原理：通过超链接遍历家族历史。' },
@@ -144,6 +214,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u4',
         title: '第四单元：校园活动线上展 (Online Memorial)',
+        // Code screen
+        imageUrl: 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l16', originalTitle: '探秘网页与代码', coffinTitle: '探秘符咒与代码', description: 'HTML基础：编写第一张电子符咒。' },
           { id: 'l17', originalTitle: '制作网页展活动', coffinTitle: '制作生平展活动', description: '为先人制作个人主页（生平事迹）。' },
@@ -155,6 +227,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u5',
         title: '第五单元：互联网创新应用 (Innovation in Afterlife)',
+        // VR / Metaverse
+        imageUrl: 'https://images.unsplash.com/photo-1617802690992-15d93263d3a9?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l21', originalTitle: '移动互联新发展', coffinTitle: '移动祭祀新发展', description: '手机端App的祭祀功能开发。' },
           { id: 'l22', originalTitle: '在线学习新变革', coffinTitle: '祖训传承新变革', description: '通过网课形式传承家族规矩。' },
@@ -167,6 +241,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u6',
         title: '第六单元：共同守护互联网 (Guarding the Net)',
+        // Firewall / Shield
+        imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l27', originalTitle: '个人信息防泄露', coffinTitle: '生辰八字防泄露', description: '防止因生辰八字泄露被“借寿”。' },
           { id: 'l28', originalTitle: '数字版权要保护', coffinTitle: '遗嘱版权要保护', description: '数字遗嘱的加密与版权认证。' },
@@ -192,6 +268,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u1',
         title: '第一单元：从感知到物联 (Perceiving the Tomb)',
+        // Sensor chip
+        imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l1', originalTitle: '开启物联网之门', coffinTitle: '开启地宫之门', description: '物联网概念引入：当棺材连上和互联网。' },
           { id: 'l2', originalTitle: '传感之古今未来', coffinTitle: '听尸之古今未来', description: '了解传感器：从听尸人到高精度传感器。' },
@@ -203,6 +281,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u2',
         title: '第二单元：万物互联有协议 (Protocols of the Dead)',
+        // Signal waves / Radio
+        imageUrl: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l6', originalTitle: '数据传输方式多', coffinTitle: '通灵传输方式多', description: '比较有线（红绳）与无线（Zigbee）传输。' },
           { id: 'l7', originalTitle: '电子标签我揭秘', coffinTitle: '符咒标签我揭秘', description: 'RFID实战：扫描电子符咒识别僵尸等级。' },
@@ -214,6 +294,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u3',
         title: '第三单元：简单物联功能实践 (Basic Necromancy)',
+        // Smart lock / Keypad
+        imageUrl: 'https://images.unsplash.com/photo-1553341640-6b28ff92098a?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l11', originalTitle: '物联功能细分解', coffinTitle: '复活功能细分解', description: '系统架构：感知层、网络层、应用层。' },
           { id: 'l12', originalTitle: '刷卡开锁易实现', coffinTitle: '令牌开棺易实现', description: 'NFC/RFID开锁实战。' },
@@ -225,6 +307,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u4',
         title: '第四单元：简易物联系统实践 (Building the System)',
+        // Dashboard
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l16', originalTitle: '模块功能先划分', coffinTitle: '陪葬模块先划分', description: '规划智能棺材的各个子系统（照明、通风、安防）。' },
           { id: 'l17', originalTitle: '物联数据需采集', coffinTitle: '生命体征需采集', description: '集成心率、呼吸传感器（防假死）。' },
@@ -236,6 +320,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u5',
         title: '第五单元：物联网应用探索 (Exploring Applications)',
+        // Lab
+        imageUrl: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l21', originalTitle: '文物保护新手段', coffinTitle: '肉身保护新手段', description: '恒温恒湿系统在遗体保存中的应用。' },
           { id: 'l22', originalTitle: '健康生活新设备', coffinTitle: '死后生活新设备', description: '智能骨灰盒、智能祭祀台等产品探究。' },
@@ -247,6 +333,8 @@ export const curriculumData: CurriculumModule[] = [
       {
         id: 'u6',
         title: '第六单元：物联网安全 (Security of the Tomb)',
+        // Digital lock
+        imageUrl: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=1000&auto=format&fit=crop',
         lessons: [
           { id: 'l26', originalTitle: '数字世界有身份', coffinTitle: '阴曹地府有身份', description: '设备指纹与身份认证。' },
           { id: 'l27', originalTitle: '安全事件与风险', coffinTitle: '被盗事件与风险', description: '分析智能门锁被黑客破解的案例。' },
@@ -258,6 +346,18 @@ export const curriculumData: CurriculumModule[] = [
     ]
   }
 ];
+
+// Enrich data with generated content
+export const curriculumData: CurriculumModule[] = rawCurriculumData.map(module => ({
+  ...module,
+  units: module.units.map(unit => ({
+    ...unit,
+    lessons: unit.lessons.map(lesson => ({
+      ...lesson,
+      content: generateDefaultContent(module.grade, lesson.coffinTitle, lesson.description)
+    }))
+  }))
+}));
 
 export const techStackData: TechComponent[] = [
   { name: 'OpenWrt', description: '嵌入式软路由系统，作为地下宫殿的数字网关，确保断网（与阳间失联）情况下局域网依然存活。', role: 'Software' },
