@@ -1,17 +1,17 @@
 import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
-import { Database, Server, Smartphone, Cloud, Radio, Cpu, Lock, ShieldCheck } from 'lucide-react';
+import { Database, Server, Smartphone, Cloud, Radio, Cpu, Lock, ShieldCheck, ArrowDown } from 'lucide-react';
 
 const ArchitectureDiagram = forwardRef<HTMLDivElement>((props, ref) => {
   return (
     <div ref={ref} className="relative w-full max-w-5xl mx-auto p-4 md:p-12 overflow-hidden perspective-1000">
       
-      {/* 3D Container */}
+      {/* 3D Container (Desktop) */}
       <motion.div 
         initial={{ rotateX: 10, opacity: 0 }}
         whileInView={{ rotateX: 0, opacity: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}
-        className="relative z-10 grid gap-16"
+        className="relative z-10 hidden md:grid gap-16"
         style={{ transformStyle: 'preserve-3d' }}
       >
         
@@ -67,6 +67,34 @@ const ArchitectureDiagram = forwardRef<HTMLDivElement>((props, ref) => {
 
       </motion.div>
 
+      {/* Mobile Stack View */}
+      <div className="md:hidden flex flex-col items-center gap-8 relative z-10">
+         {/* Top Layer */}
+         <div className="flex flex-wrap justify-center gap-4">
+            <Node icon={Smartphone} label="生者终端" sub="App" color="text-blue-400" small />
+            <Node icon={Radio} label="传感器" sub="Zigbee" color="text-yellow-400" small />
+         </div>
+         
+         <ArrowDown className="text-gray-600 animate-bounce" />
+
+         {/* Core */}
+         <div className="relative p-1 bg-gradient-to-b from-emperor-gold/50 to-transparent rounded-xl w-full max-w-[280px]">
+            <div className="bg-[#0a0a0a] border border-emperor-gold/50 rounded-lg p-6 text-center relative z-10">
+                <Server size={32} className="mx-auto text-emperor-gold mb-3" />
+                <h3 className="text-lg font-bold text-white">OpenWrt Gateway</h3>
+                <p className="text-xs text-gray-500 mt-1">本地雾计算 / MQTT</p>
+            </div>
+         </div>
+
+         <ArrowDown className="text-gray-600 animate-bounce" />
+
+         {/* Bottom Layer */}
+         <div className="flex flex-wrap justify-center gap-4">
+            <Node icon={Cloud} label="冥府云" sub="K8s" color="text-purple-400" small />
+            <Node icon={Database} label="数据库" sub="PGSQL" color="text-pink-400" small />
+         </div>
+      </div>
+
       {/* Background Decor */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[radial-gradient(circle_at_center,_rgba(212,175,55,0.05)_0%,_transparent_70%)] pointer-events-none"></div>
     </div>
@@ -77,16 +105,16 @@ ArchitectureDiagram.displayName = 'ArchitectureDiagram';
 
 // Subcomponents
 
-const Node = ({ icon: Icon, label, sub, color }: { icon: any, label: string, sub: string, color: string }) => (
+const Node = ({ icon: Icon, label, sub, color, small = false }: { icon: any, label: string, sub: string, color: string, small?: boolean }) => (
     <motion.div 
         whileHover={{ y: -5 }}
-        className="flex flex-col items-center p-4 rounded-xl bg-[#111] border border-white/5 backdrop-blur-sm min-w-[120px]"
+        className={`flex flex-col items-center p-4 rounded-xl bg-[#111] border border-white/5 backdrop-blur-sm ${small ? 'min-w-[100px] p-3' : 'min-w-[120px]'}`}
     >
-        <div className={`p-3 rounded-full bg-white/5 mb-3 ${color} border border-white/5 shadow-inner`}>
-            <Icon size={24} />
+        <div className={`p-3 rounded-full bg-white/5 mb-3 ${color} border border-white/5 shadow-inner ${small ? 'p-2 mb-2' : ''}`}>
+            <Icon size={small ? 20 : 24} />
         </div>
-        <h4 className="text-sm font-bold text-gray-200">{label}</h4>
-        <span className="text-[10px] text-gray-600 font-mono mt-1">{sub}</span>
+        <h4 className={`font-bold text-gray-200 ${small ? 'text-xs' : 'text-sm'}`}>{label}</h4>
+        <span className={`text-gray-600 font-mono mt-1 ${small ? 'text-[9px]' : 'text-[10px]'}`}>{sub}</span>
     </motion.div>
 );
 

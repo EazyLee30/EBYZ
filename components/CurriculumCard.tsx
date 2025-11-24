@@ -19,7 +19,7 @@ const UnitItem: React.FC<UnitProps> = ({ unit, module, onLessonClick }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-10% 0px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-24 relative group"
+            className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 mb-16 md:mb-24 relative group"
         >
             {/* Left Column: Image & Info */}
             <div className="lg:col-span-1 space-y-6">
@@ -86,11 +86,11 @@ const UnitItem: React.FC<UnitProps> = ({ unit, module, onLessonClick }) => {
                             className="w-full text-left p-4 rounded-lg bg-white/5 border border-white/5 hover:border-emperor-gold/30 transition-all duration-300 flex items-center justify-between gap-4 group/lesson"
                         >
                             <div className="flex items-center gap-4 min-w-0">
-                                <span className="text-xs font-mono text-emperor-gold/50 font-bold group-hover/lesson:text-emperor-gold transition-colors">
+                                <span className="text-xs font-mono text-emperor-gold/50 font-bold group-hover/lesson:text-emperor-gold transition-colors shrink-0">
                                     {String(idx + 1).padStart(2, '0')}
                                 </span>
-                                <div className="flex flex-col gap-1">
-                                    <span className="text-sm font-bold text-gray-200 group-hover/lesson:text-white transition-colors">
+                                <div className="flex flex-col gap-1 min-w-0">
+                                    <span className="text-sm font-bold text-gray-200 group-hover/lesson:text-white transition-colors truncate">
                                         {lesson.coffinTitle}
                                     </span>
                                     <span className="text-xs text-gray-500 line-clamp-1 group-hover/lesson:text-gray-400 font-light">
@@ -98,7 +98,7 @@ const UnitItem: React.FC<UnitProps> = ({ unit, module, onLessonClick }) => {
                                     </span>
                                 </div>
                             </div>
-                            <ArrowUpRight size={14} className="text-gray-600 group-hover/lesson:text-emperor-gold transition-colors opacity-0 group-hover/lesson:opacity-100" />
+                            <ArrowUpRight size={14} className="text-gray-600 group-hover/lesson:text-emperor-gold transition-colors opacity-0 group-hover/lesson:opacity-100 shrink-0" />
                         </motion.button>
                     ))}
                 </div>
@@ -116,24 +116,20 @@ interface Props {
 const CurriculumCard: React.FC<Props> = ({ module, onLessonClick, defaultExpanded = false }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
-  const getIcon = () => {
-    if (module.id.includes('g6')) return <Cpu className="text-jade-green" size={32} />;
-    if (module.id.includes('g7')) return <Network className="text-blue-400" size={32} />;
-    return <Activity className="text-red-500" size={32} />;
-  };
-
   return (
     <SpotlightCard 
         className={`transition-all duration-700 bg-[#080808] border border-white/5 ${isExpanded ? 'bg-[#0a0a0a]' : 'hover:-translate-y-1'}`}
         spotlightColor="rgba(212, 175, 55, 0.08)"
     >
-      <div className="p-8 md:p-10">
-        <div className="flex justify-between items-start mb-12 cursor-pointer select-none" onClick={() => setIsExpanded(!isExpanded)}>
-            <div className="flex items-center gap-6">
-                <div className="relative">
+      <div className="p-6 md:p-10">
+        <div className="flex justify-between items-start mb-8 md:mb-12 cursor-pointer select-none" onClick={() => setIsExpanded(!isExpanded)}>
+            <div className="flex items-center gap-4 md:gap-6">
+                <div className="relative shrink-0">
                     <div className="absolute inset-0 bg-emperor-gold/20 blur-xl rounded-full animate-pulse-slow"></div>
-                    <div className="relative p-4 bg-[#111] rounded-2xl border border-white/10 shadow-2xl">
-                        {getIcon()}
+                    <div className="relative p-3 md:p-4 bg-[#111] rounded-2xl border border-white/10 shadow-2xl">
+                        {module.id.includes('g6') && <Cpu className="text-jade-green w-6 h-6 md:w-8 md:h-8" />}
+                        {module.id.includes('g7') && <Network className="text-blue-400 w-6 h-6 md:w-8 md:h-8" />}
+                        {module.id.includes('g8') && <Activity className="text-red-500 w-6 h-6 md:w-8 md:h-8" />}
                     </div>
                 </div>
                 <div>
@@ -142,7 +138,7 @@ const CurriculumCard: React.FC<Props> = ({ module, onLessonClick, defaultExpande
                             Grade {module.grade.includes('六') ? '06' : module.grade.includes('七') ? '07' : '08'}
                         </span>
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-serif font-bold text-white leading-none tracking-tight">
+                    <h3 className="text-2xl md:text-4xl font-serif font-bold text-white leading-none tracking-tight">
                         {module.title.split('：')[1]}
                     </h3>
                 </div>
@@ -154,15 +150,15 @@ const CurriculumCard: React.FC<Props> = ({ module, onLessonClick, defaultExpande
             )}
         </div>
       
-        <div className="mb-10 pl-4 border-l-2 border-emperor-gold/30">
-            <p className="text-emperor-gold/80 text-xl font-serif italic">
+        <div className="mb-8 md:mb-10 pl-4 border-l-2 border-emperor-gold/30">
+            <p className="text-emperor-gold/80 text-lg md:text-xl font-serif italic">
             "{module.metaphor}"
             </p>
         </div>
 
-        <div className="space-y-10">
+        <div className="space-y-8 md:space-y-10">
             {!isExpanded && (
-                <div className="text-base text-gray-400 leading-relaxed max-w-2xl animate-fade-in">
+                <div className="text-sm md:text-base text-gray-400 leading-relaxed max-w-2xl animate-fade-in">
                     {module.scenario}
                 </div>
             )}
@@ -170,18 +166,18 @@ const CurriculumCard: React.FC<Props> = ({ module, onLessonClick, defaultExpande
             {isExpanded && (
                 <div className="animate-fade-in">
                     {/* Header Info */}
-                    <div className="mb-16 border-b border-white/5 pb-12">
+                    <div className="mb-10 md:mb-16 border-b border-white/5 pb-8 md:pb-12">
                          <h4 className="text-xs font-mono text-gray-500 uppercase mb-4 flex items-center gap-2 tracking-widest">
                             <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
                             Scenario Context
                         </h4>
-                        <p className="text-gray-300 text-lg leading-relaxed font-light max-w-3xl">
+                        <p className="text-gray-300 text-base md:text-lg leading-relaxed font-light max-w-3xl">
                             {module.scenario}
                         </p>
                     </div>
 
                     {/* Sequence Header */}
-                    <h4 className="text-white text-xs font-bold mb-12 flex items-center gap-2 uppercase tracking-widest opacity-50">
+                    <h4 className="text-white text-xs font-bold mb-8 md:mb-12 flex items-center gap-2 uppercase tracking-widest opacity-50">
                         <Scroll size={14} />
                         Modules sequence
                     </h4>
