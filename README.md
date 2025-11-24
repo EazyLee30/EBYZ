@@ -1,26 +1,43 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 《人均嬴政白皮书》
 
-# EBYZ - EveryBody YingZheng
+**智能棺材全栈物联网教学平台**
 
-**人均嬴政白皮书 - 智能棺材全栈物联网教学平台**
+> **编者**：沪上嘻嘻生
+>
+> **座右铭**：讲好棺材故事，贡献棺材方案，享受棺材人生
 
-> "Where IoT meets Immortality." —— 当物联网遇到赛博永生。
+---
 
-[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-6.0-purple?logo=vite)](https://vitejs.dev/)
-[![Gemini AI](https://img.shields.io/badge/AI-Google%20Gemini-orange?logo=google-gemini)](https://deepmind.google/technologies/gemini/)
+## ⚰️ 序言：向死而生 (Prologue)
 
-## 📜 项目简介
+### 1. 棺材板盖不住继续盖
+**实时监控棺材板，讨论信息社会责任：**
+*   有摄像头监控棺材好不好？
+*   棺材内部温湿度是否合理？
+*   是否需要加入继电器控制空调？
 
-这是一个基于 **OpenWrt** 与 **Home Assistant** 架构的沉浸式物联网教学平台。我们以**“智能棺材”**（终极智能家居）为主线，重构了义务教育信息科技课程（6-8年级），涵盖过程控制、互联网协议及 IoT 实战。
+有人问：“私人还要监管内部吗，这不合理。”
+**那我请问了，秦始皇陵墓怎么造的？** 智能棺材要建立防御机制，从而引出物联网核心概念——**反馈机制**：
+`输入 (Input) → 处理 (Process) → 输出 (Output) → 反馈 (Feedback)`
 
-**核心特色：**
-*   🏺 **沉浸式叙事**：将枯燥的技术点包装为“陵墓防御”、“数字墓志铭”、“诈尸预警”等趣味场景。
-*   ✨ **赛博美学**：黑金配色，融合 Glitch 故障风与流体光效，打造庄严而诡秘的视觉体验。
-*   🔮 **AI 助教**：“秦大爷” (Oracle) 在线答疑，用幽默讽刺的语言风格解答技术难题。
+### 2. 价值观的终极思考
+有人又要说了，天天棺材的不符合积极向上的价值观。
+那我说“天天向上”，停下来就要掉下来了。上句“奋力一跃”，下句“直笔笔落地成盒”。
+所以要有**危机意识**，有**长远的发展规划**，用发展的眼光看待世界，**直接看到终点，世界的尽头**。
+
+---
+
+## 📚 教学指南重构 (Curriculum Guide)
+
+本项目重新构建了义务教育 **六年级、七年级、八年级** 的信息科技教学指南。
+
+*   **核心主线**：以 **智能棺材** 为主线，贯穿六七八年级。
+*   **概念替换**：**智能家居 (Smart Home) → 智能棺材 (Smart Coffin)**。用“棺材”指代所有智能家居设备，构建终极庇护所。
+*   **技术架构**：基于 **OpenWrt** (软路由/网关) 和 **Home Assistant** (智能中枢)。
+*   **智能棺材方案全解**：涵盖 **Zigbee**、**MQTT**、**蓝牙 (Bluetooth)** 等物联网技术以及网络协议。
+*   **最终形态**：将系统完整应用到 **米家 (Mi Home)** 和 **Apple Home** 生态中。
+
+---
 
 ## 👁️ 页面预览 (Visual Tour)
 
