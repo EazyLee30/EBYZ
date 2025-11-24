@@ -41,7 +41,21 @@ export default async function handler(req, res) {
       contents: prompt,
     });
 
-    const text = result.text();
+    // Handle different response structures based on SDK version
+    let text = '';
+    if (typeof result.text === 'function') {
+        text = result.text();
+    } else if (result.text) {
+        text = result.text;
+    } else if (result.response && typeof result.response.text === 'function') {
+        text = result.response.text();
+    } else if (result.candidates && result.candidates.length > 0) {
+        text = result.candidates[0].content.parts[0].text;
+    } else {
+        console.warn("Unexpected result structure:", JSON.stringify(result));
+        text = "生成失败：无法解析 AI 响应数据。";
+    }
+
     return res.status(200).json({ text });
 
   } catch (error) {
