@@ -6,11 +6,12 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/atom-one-dark.css';
-import knowledgeBase from '../data/knowledge.json'; // RAG Data
+// @ts-ignore
+import knowledgeBase from '@/src/data/knowledge.json';
 
 interface Props {
   lesson: Lesson;
-  module: CurriculumModule; // Pass parent module for context
+  module: CurriculumModule;
   onBack: () => void;
 }
 
@@ -35,14 +36,21 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       const ai = new GoogleGenAI({ apiKey });
       const model = 'gemini-2.5-flash';
       
-      // RAG Context
-      const knowledgeContext = knowledgeBase.map(k => `[参考资料: ${k.filename}]\n${k.content}`).join('\n\n');
+      // RAG Context: Retrieve relevant info from knowledge base
+      // Simple context injection: include first 5000 chars of relevant docs or all if small
+      // Ideally this would be a vector search, but for static site we dump relevant text.
+      const knowledgeContext = (knowledgeBase as any[] || []).map(k => {
+         if (k.content.includes(module.grade) || k.content.includes('物联网') || k.content.includes('控制')) {
+             return `[参考资料: ${k.filename}]\n${k.content.substring(0, 3000)}...`; // Truncate to avoid token limits
+         }
+         return '';
+      }).filter(Boolean).join('\n\n');
 
       const prompt = `
       请为初中信息科技课程生成一份幽默、暗黑科技风格的“教案”。
       主题：“智能棺材”（智能陵墓）。
       
-      【参考知识库】：
+      【参考知识库 (RAG Context)】：
       ${knowledgeContext}
       
       课程标题: ${lesson.coffinTitle}
@@ -52,10 +60,15 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       
       请遵循以下规则：
       1. **必须使用中文回答**。
-      2. 使用Markdown格式结构化输出（包含 ## 标题, **加粗**, - 列表）。
+      2. 使用Markdown格式结构化输出（包含 ## 标题, **加粗**, - 列表, 代码块）。
       3. 风格要幽默、讽刺，用“棺材”、“陵墓”、“陪葬品”等词汇比喻现代智能家居设备。
-      4. 结合参考知识库中的教学目标和核心概念。
-      5. 教案结构应包含：【教学目标】、【法器准备】（器材）、【教学仪式】（过程）、【防诈尸警告】（安全提示）。
+      4. 结合参考知识库中的教学目标和核心概念，确保教学内容的准确性。
+      5. 教案结构应包含：
+         - 【教学目标】(Objectives)
+         - 【法器准备】(Materials)
+         - 【教学仪式】(Procedure)
+         - 【代码符咒】(Code Example, Python/C++/YAML)
+         - 【防诈尸警告】(Safety Warning)
       `;
 
       const result = await ai.models.generateContent({
@@ -63,10 +76,10 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
         contents: prompt,
       });
 
-      setAiContent(result.text || 'The spirits are silent today...');
+      setAiContent(result.text || '冥界信号微弱，请稍后再试...');
     } catch (error) {
       console.error(error);
-      setAiContent('Connection to the underworld (API) failed.');
+      setAiContent('通灵仪式中断（API Connection Failed）。请检查您的 VITE_GEMINI_API_KEY 是否已配置。');
     } finally {
       setLoading(false);
     }
@@ -74,7 +87,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
 
   return (
     <div className="fixed inset-0 bg-[#050505] z-[9999] overflow-y-auto animate-slide-up text-white">
-      {/* ... Background & Navbar ... */}
+      {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-20" 
            style={{
              backgroundImage: 'radial-gradient(#333 1px, transparent 1px)', 
@@ -82,6 +95,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
            }}>
       </div>
 
+      {/* Navbar */}
       <div className="sticky top-0 z-50 glass-panel border-b border-white/5 px-6 py-4 flex justify-between items-center">
         <button 
           onClick={onBack}
@@ -243,7 +257,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                                     教案不够阴间？(AI Override)
                                 </h3>
                                 <p className="text-gray-500 text-sm">
-                                    召唤秦大爷重写一份更具“特色”的教案。
+                                    召唤秦大爷重写一份更具“特色”的教案（RAG知识库增强版）。
                                 </p>
                             </div>
                             <button 
@@ -266,7 +280,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                                     恢复预设
                                 </button>
                             </div>
-                            <div className="prose prose-invert prose-emperor max-w-none prose-headings:text-emperor-gold prose-ul:list-disc prose-ul:ml-4 prose-ol:list-decimal prose-ol:ml-4">
+                            <div className="prose prose-invert prose-emperor max-w-none prose-headings:text-emperor-gold prose-ul:list-disc prose-ul:ml-4 prose-ol:list-decimal prose-ol:ml-4 prose-a:text-jade-green hover:prose-a:text-white prose-code:bg-[#1a1a1a] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-purple-300 prose-pre:bg-[#080808] prose-pre:border prose-pre:border-white/10">
                                 <ReactMarkdown 
                                     remarkPlugins={[remarkGfm]} 
                                     rehypePlugins={[rehypeHighlight]}
@@ -282,7 +296,6 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
 
             {/* Right Column: Meta Info (4 cols) */}
             <div className="lg:col-span-4 space-y-6 animate-slide-up" style={{ animationDelay: '0.8s' }}>
-                 {/* ... Keep existing meta cards ... */}
                  <div className="bg-[#121212] p-6 rounded-xl border border-gray-800 shadow-lg">
                     <h4 className="text-white font-bold mb-6 flex items-center gap-2 text-sm uppercase tracking-widest">
                         <AlertTriangle size={16} className="text-jade-green" />

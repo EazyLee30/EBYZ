@@ -1,19 +1,20 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import pdf from 'pdf-parse';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fs = require('fs');
+const path = require('path');
+const pdf = require('pdf-extraction');
 
 const knowledgeBaseDir = path.join(__dirname, '../knowledge_base');
-const finalOutputPath = path.join(__dirname, '../knowledge.json');
+const outputDir = path.join(__dirname, '../src/data');
+const finalOutputPath = path.join(outputDir, 'knowledge.json');
 
 async function extractText() {
   try {
     if (!fs.existsSync(knowledgeBaseDir)) {
       console.error('Knowledge base directory not found:', knowledgeBaseDir);
       return;
+    }
+    
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
     }
 
     const files = fs.readdirSync(knowledgeBaseDir).filter(file => file.endsWith('.pdf'));
@@ -29,11 +30,12 @@ async function extractText() {
       try {
         const data = await pdf(dataBuffer);
         const text = data.text;
+        // Simple cleanup
         const cleanText = text.replace(/\n\s*\n/g, '\n').trim();
         
         knowledge.push({
           filename: file,
-          content: cleanText.substring(0, 50000)
+          content: cleanText.substring(0, 50000) // Limit size
         });
         console.log(`Extracted ${cleanText.length} characters from ${file}`);
       } catch (err) {
@@ -52,4 +54,3 @@ async function extractText() {
 }
 
 extractText();
-
