@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { Sparkles, Send } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/atom-one-dark.css'; // Import code highlight style
+import knowledgeBase from '../data/knowledge.json'; // RAG Data
 
 const Oracle: React.FC = () => {
   const [input, setInput] = useState('');
@@ -20,12 +25,23 @@ const Oracle: React.FC = () => {
       // Determine model based on complexity, using flash for quick responses
       const modelName = 'gemini-2.5-flash'; 
       
+      // RAG Context Injection
+      const knowledgeContext = knowledgeBase.map(k => `[Source: ${k.filename}]\n${k.content}`).join('\n\n');
+
       const prompt = `
       角色设定：你是“人均嬴政白皮书”的智能助手，名叫“秦大爷”。你是一个精通OpenWrt, Home Assistant, Zigbee, MQTT的物联网专家，但你的说话风格非常幽默、讽刺，喜欢用“棺材”、“陵墓”、“陪葬品”来比喻智能家居设备。
       
+      【参考知识库】：
+      ${knowledgeContext}
+      
       用户问题：${input}
       
-      请用简短、技术性强但风格独特的语言回答。如果涉及代码，请提供Python或YAML配置。
+      请用简短、技术性强但风格独特的语言回答。
+      必须遵守：
+      1. 使用Markdown格式（包括代码块、粗体、列表）。
+      2. 结合参考知识库中的内容进行回答（如果相关）。
+      3. 如果涉及代码，请提供Python或YAML配置。
+      4. 保持“秦大爷”的人设，自称“朕”或“本大爷”。
       `;
 
       const result = await ai.models.generateContent({
@@ -36,7 +52,7 @@ const Oracle: React.FC = () => {
       setResponse(result.text || '朕今日乏了，改日再问。');
     } catch (error) {
       console.error(error);
-      setResponse('通信链路（通灵仪式）中断，请检查API Key。');
+      setResponse('**通信链路（通灵仪式）中断**，请检查API Key是否已焚烧到位。');
     } finally {
       setLoading(false);
     }
@@ -57,10 +73,15 @@ const Oracle: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        <div className="bg-[#1a1a1a] p-4 rounded-lg min-h-[100px] max-h-[300px] overflow-y-auto border border-gray-800">
+        <div className="bg-[#1a1a1a] p-4 rounded-lg min-h-[100px] max-h-[500px] overflow-y-auto border border-gray-800 scrollbar-thin scrollbar-thumb-emperor-gold/20 scrollbar-track-transparent">
           {response ? (
-            <div className="prose prose-invert prose-sm max-w-none">
-              <pre className="whitespace-pre-wrap font-sans text-gray-300">{response}</pre>
+            <div className="prose prose-invert prose-sm max-w-none prose-headings:text-emperor-gold prose-a:text-blue-400 prose-code:text-yellow-300">
+               <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]} 
+                  rehypePlugins={[rehypeHighlight]}
+               >
+                  {response}
+               </ReactMarkdown>
             </div>
           ) : (
             <p className="text-gray-600 italic text-center mt-4">

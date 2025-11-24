@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll } from 'lucide-react';
 import { Lesson, CurriculumModule } from '../types';
 import { GoogleGenAI } from "@google/genai";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/atom-one-dark.css';
+import knowledgeBase from '../data/knowledge.json'; // RAG Data
 
 interface Props {
   lesson: Lesson;
@@ -18,7 +23,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
 
   const generateLessonPlan = async () => {
     setLoading(true);
-    // ... same as before
+    
     try {
       // Safe API key access for Vite
       const apiKey = import.meta.env?.VITE_GEMINI_API_KEY || ''; 
@@ -30,16 +35,27 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       const ai = new GoogleGenAI({ apiKey });
       const model = 'gemini-2.5-flash';
       
+      // RAG Context
+      const knowledgeContext = knowledgeBase.map(k => `[参考资料: ${k.filename}]\n${k.content}`).join('\n\n');
+
       const prompt = `
-      Create a humorous, dark-tech "Teaching Plan" for a middle school IoT class.
-      Theme: "Smart Coffin" (Intelligent Tomb).
+      请为初中信息科技课程生成一份幽默、暗黑科技风格的“教案”。
+      主题：“智能棺材”（智能陵墓）。
       
-      Lesson Title: ${lesson.coffinTitle}
-      Original Curriculum Title: ${lesson.originalTitle}
-      Description: ${lesson.description}
-      Module Tech Stack: ${module.techStack.join(', ')}
+      【参考知识库】：
+      ${knowledgeContext}
       
-      Structure the response in Markdown. Keep it witty.
+      课程标题: ${lesson.coffinTitle}
+      原课程标题: ${lesson.originalTitle}
+      描述: ${lesson.description}
+      模块技术栈: ${module.techStack.join(', ')}
+      
+      请遵循以下规则：
+      1. **必须使用中文回答**。
+      2. 使用Markdown格式结构化输出（包含 ## 标题, **加粗**, - 列表）。
+      3. 风格要幽默、讽刺，用“棺材”、“陵墓”、“陪葬品”等词汇比喻现代智能家居设备。
+      4. 结合参考知识库中的教学目标和核心概念。
+      5. 教案结构应包含：【教学目标】、【法器准备】（器材）、【教学仪式】（过程）、【防诈尸警告】（安全提示）。
       `;
 
       const result = await ai.models.generateContent({
@@ -250,13 +266,13 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                                     恢复预设
                                 </button>
                             </div>
-                            <div className="prose prose-invert prose-emperor max-w-none">
-                                {aiContent.split('\n').map((line, i) => {
-                                    if (line.startsWith('##')) return <h3 key={i} className="text-xl font-bold text-white mt-8 mb-4 border-l-2 border-emperor-gold pl-4">{line.replace('##', '')}</h3>;
-                                    if (line.startsWith('**')) return <div key={i} className="bg-[#1a1a1a] p-4 rounded-lg my-4 border border-gray-800"><strong className="block text-emperor-gold mb-1">{line.replace(/\*\*/g, '').split(':')[0]}</strong><span className="text-gray-400 text-sm">{line.split(':')[1]}</span></div>;
-                                    if (line.startsWith('-')) return <li key={i} className="text-gray-400 ml-4 list-disc mb-2">{line.replace('-', '')}</li>;
-                                    return <p key={i} className="text-gray-300 mb-3 leading-relaxed">{line}</p>;
-                                })}
+                            <div className="prose prose-invert prose-emperor max-w-none prose-headings:text-emperor-gold prose-ul:list-disc prose-ul:ml-4 prose-ol:list-decimal prose-ol:ml-4">
+                                <ReactMarkdown 
+                                    remarkPlugins={[remarkGfm]} 
+                                    rehypePlugins={[rehypeHighlight]}
+                                >
+                                    {aiContent}
+                                </ReactMarkdown>
                             </div>
                         </div>
                     )}
