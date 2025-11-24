@@ -13,7 +13,10 @@ const Oracle: React.FC = () => {
     setResponse('');
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+      // Use standard Vite env var
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+      const ai = new GoogleGenAI({ apiKey });
+      
       // Determine model based on complexity, using flash for quick responses
       const modelName = 'gemini-2.5-flash'; 
       
