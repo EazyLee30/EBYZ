@@ -95,15 +95,21 @@ const Profile: React.FC<Props> = ({ onBack, onRemix }) => {
       if (!confirm('确认要将此教案从冥府档案中永久抹除吗？')) return;
       
       try {
-          const { error } = await supabase.from('posts').delete().eq('id', postId);
+          const { error } = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', postId)
+            .eq('user_id', user.id); // Ensure we only delete our own post
+
           if (error) throw error;
           
+          // Remove from local state immediately
           setUserPosts(prev => prev.filter(p => p.id !== postId));
           setSelectedPost(null);
           alert('已销毁。');
       } catch (error: any) {
-          console.error(error);
-          alert('销毁失败：' + error.message);
+          console.error('Delete error:', error);
+          alert('销毁失败：请检查您的网络或权限。' + (error.message || ''));
       }
   };
 
@@ -139,7 +145,12 @@ const Profile: React.FC<Props> = ({ onBack, onRemix }) => {
   const handleRemixPost = (post: any) => {
       const markdown = post.content?.markdown || '';
       if (onRemix) {
-          onRemix(markdown);
+          // @ts-ignore
+          onRemix({
+              content: markdown,
+              title: post.title, // Editing own post, keep title (or user can change)
+              grade: post.grade
+          });
       }
   };
 
