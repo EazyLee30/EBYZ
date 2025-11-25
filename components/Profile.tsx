@@ -63,10 +63,10 @@ const Profile: React.FC<Props> = ({ onBack }) => {
     onBack(); // Go back to home after logout
   };
 
-  if (loading) return <div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">读取档案中...</div>;
+  if (loading) return <div className="fixed inset-0 z-[5000] bg-[#050505] flex items-center justify-center text-white">读取档案中...</div>;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white p-4 md:p-8 relative overflow-hidden">
+    <div className="fixed inset-0 z-[5000] overflow-y-auto bg-[#050505] text-white p-4 md:p-8">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-20" 
            style={{

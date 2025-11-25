@@ -71,7 +71,7 @@ const Leaderboard: React.FC<Props> = ({ onBack }) => {
 
   if (error) {
       return (
-        <div className="min-h-screen bg-[#050505] text-white p-8 flex flex-col items-center justify-center">
+        <div className="fixed inset-0 z-[5000] overflow-y-auto bg-[#050505] text-white p-8 flex flex-col items-center justify-center">
             <Skull size={64} className="text-red-500 mb-4" />
             <h2 className="text-2xl font-bold text-red-500 mb-2">冥界数据连接断开</h2>
             <p className="text-gray-500 mb-6 text-center max-w-md">
@@ -88,7 +88,7 @@ const Leaderboard: React.FC<Props> = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white p-4 md:p-8 relative overflow-hidden">
+    <div className="fixed inset-0 z-[5000] overflow-y-auto bg-[#050505] text-white p-4 md:p-8">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-20" 
            style={{
