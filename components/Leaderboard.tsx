@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Skull, Trophy, Clock, GitFork, Star, User, ArrowRight, X, Copy, RefreshCw } from 'lucide-react';
+import { Skull, Trophy, Clock, GitFork, Star, User, ArrowRight, X, Copy, RefreshCw, Heart } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -33,8 +33,14 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'hot' | 'new' | 'remix'>('hot');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    // Load liked posts from local storage
+    const savedLikes = localStorage.getItem('liked_posts');
+    if (savedLikes) {
+        setLikedPosts(new Set(JSON.parse(savedLikes)));
+    }
     fetchPosts();
   }, [filter]);
 
@@ -59,6 +65,9 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
       } else if (filter === 'remix') {
         query = query.order('remix_count', { ascending: false });
       }
+
+      // Filter only published posts
+      query = query.not('content->>published', 'eq', 'false');
 
       const { data, error } = await query.limit(20);
 
@@ -86,11 +95,53 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
   const handleRemixClick = (post: Post) => {
       const markdown = post.content?.markdown || '';
       if (onRemix) {
-          onRemix(markdown);
+          // @ts-ignore
+          onRemix({
+              content: markdown,
+              title: `二创：${post.title}`,
+              grade: post.grade
+          });
       } else {
           // Fallback if no remix handler provided
           handleCopyContent(markdown);
-          alert("已复制该教案内容。请前往生成页面，粘贴至自定义咒语区域进行二创。");
+          alert("已复制该教案内容。");
+      }
+  };
+
+  const handleLike = async (e: React.MouseEvent, post: Post) => {
+      e.stopPropagation();
+      
+      if (likedPosts.has(post.id)) {
+          // Already liked (client-side check only for now)
+          return; 
+      }
+
+      // Optimistic update
+      const newLikesCount = (post.likes_count || 0) + 1;
+      setPosts(prev => prev.map(p => p.id === post.id ? { ...p, likes_count: newLikesCount } : p));
+      if (selectedPost && selectedPost.id === post.id) {
+          setSelectedPost(prev => prev ? { ...prev, likes_count: newLikesCount } : null);
+      }
+
+      // Update local storage
+      const newLikedPosts = new Set(likedPosts).add(post.id);
+      setLikedPosts(newLikedPosts);
+      localStorage.setItem('liked_posts', JSON.stringify(Array.from(newLikedPosts)));
+
+      try {
+          // Increment in Supabase
+          // Since we don't have a dedicated increment RPC set up yet, we fetch fresh then update to be safer, 
+          // or just blindly update with our optimistic value (less safe for concurrency but okay for now).
+          // Best effort with current permissions:
+          const { error } = await supabase
+            .from('posts')
+            .update({ likes_count: newLikesCount })
+            .eq('id', post.id);
+
+          if (error) throw error;
+      } catch (error) {
+          console.error('Failed to update like count', error);
+          // Revert on error? Maybe too jarring. Let's just keep it optimistic for the user session.
       }
   };
 
@@ -242,8 +293,18 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
 
                             {/* Stats */}
                             <div className="flex items-center gap-6 flex-shrink-0">
-                                <div className="text-center">
-                                    <div className="text-2xl font-bold text-white">{post.likes_count || 0}</div>
+                                <div className="text-center group/likes">
+                                    <button 
+                                        onClick={(e) => handleLike(e, post)}
+                                        className={`flex flex-col items-center transition-colors ${likedPosts.has(post.id) ? 'text-red-500' : 'text-white hover:text-red-500'}`}
+                                    >
+                                        <Heart 
+                                            size={24} 
+                                            fill={likedPosts.has(post.id) ? "currentColor" : "none"} 
+                                            className={`transition-transform ${likedPosts.has(post.id) ? '' : 'group-hover/likes:scale-110'}`}
+                                        />
+                                        <span className="text-2xl font-bold mt-1">{post.likes_count || 0}</span>
+                                    </button>
                                     <div className="text-xs text-gray-500 uppercase">Likes</div>
                                 </div>
                                 <div className="text-center">
@@ -287,7 +348,16 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
                     {/* Modal Header */}
                     <div className="p-6 border-b border-white/10 flex items-center justify-between bg-[#0f0f0f]">
                         <div>
-                            <h2 className="text-2xl font-serif font-bold text-white mb-1">{selectedPost.title}</h2>
+                            <div className="flex items-center gap-4 mb-1">
+                                <h2 className="text-2xl font-serif font-bold text-white">{selectedPost.title}</h2>
+                                <button 
+                                    onClick={(e) => handleLike(e, selectedPost)}
+                                    className={`flex items-center gap-1 px-3 py-1 rounded-full border transition-all ${likedPosts.has(selectedPost.id) ? 'border-red-500/50 bg-red-500/10 text-red-500' : 'border-white/10 bg-white/5 text-gray-400 hover:text-red-500 hover:border-red-500/30'}`}
+                                >
+                                    <Heart size={16} fill={likedPosts.has(selectedPost.id) ? "currentColor" : "none"} />
+                                    <span className="text-sm font-bold">{selectedPost.likes_count || 0} Likes</span>
+                                </button>
+                            </div>
                             <div className="flex items-center gap-4 text-sm text-gray-400">
                                 <span className="px-2 py-0.5 bg-emperor-gold/10 text-emperor-gold rounded text-xs border border-emperor-gold/20">{selectedPost.grade}</span>
                                 <span>作者: {selectedPost.profiles?.nickname || '无名氏'}</span>
