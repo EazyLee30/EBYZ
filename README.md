@@ -27,6 +27,35 @@
 
 ---
 
+## 🌟 核心功能亮点
+
+本项目不仅仅是一个静态的课程展示，更是一个集成了 **AI 生成**、**社区互动** 与 **二创生态** 的全栈平台。
+
+### 1. 🤖 AI 智能教案生成 (RAG 驱动)
+摒弃千篇一律的模板，每一份教案都是现场“通灵”生成。
+*   **个性化定制**：支持输入“自定义咒语”，让 AI 根据你的特殊需求调整教案风格（例如：“让风格更阴间一点”或“强调网络安全”）。
+*   **RAG 增强**：内置教育部《义务教育信息科技课程标准》知识库，确保生成的教案既符合“智能棺材”的设定，又不偏离教学大纲的核心素养。
+
+### 2. 🏆 冥界封神榜 (Leaderboard)
+这是一个展示优秀教案的社区排行榜。
+*   **实时排名**：根据点赞数（🔥 Hot）、二创数（🍴 Remix）和发布时间（🕒 New）进行排序。
+*   **互动点赞**：用户可以为喜欢的教案点赞（点亮爱心），数据实时同步至 Supabase 数据库。
+*   **详情预览**：点击任意条目，即可在弹窗中预览完整的 Markdown 教案内容。
+
+### 3. 🍴 教案二创 (Remix System)
+开源精神的终极体现——**Fork & Modify**。
+*   **一键二创**：在排行榜或详情页点击“以此为基础二创”，即可将该教案的内容完全复制到编辑器中。
+*   **站在巨人的肩膀上**：你可以在原教案的基础上修改标题、年级，并让 AI 进行润色或重写，创造出全新的版本。
+*   **版本溯源**：二创后的教案依然保留原作者的灵感印记（未来版本规划）。
+
+### 4. 💀 个人档案与生命周期管理 (Profile)
+每个用户都拥有自己的“生死簿”。
+*   **草稿箱**：生成的教案如果不满意或未完成，可以先保存为“草稿”，仅自己可见。
+*   **发布与撤销**：一键将满意的教案发布到“封神榜”；如有悔意，也可随时“撤销发布”，将其拉回草稿箱。
+*   **销毁数据**：对于彻底不满意的作品，支持物理层面的“销毁”（从数据库永久删除）。
+
+---
+
 ## 📚 教学指南重构 (Curriculum Guide)
 
 本项目重新构建了义务教育 **六年级、七年级、八年级** 的信息科技教学指南。
@@ -92,15 +121,9 @@
 </div>
 
 ### 3. 课程详情 (Lesson Detail)
-沉浸式教学详情页，包含 **RAG 增强** 的 AI 教案生成功能。支持一键生成 PDF 格式的“通灵卷轴”。
+沉浸式教学详情页，包含 **RAG 增强** 的 AI 教案生成功能。支持自定义 Prompt 和实时 Markdown 渲染。
 <div align="center">
-  <img src="assets/screenshots/lesson-detail.png" alt="Lesson Detail" width="800" style="border-radius: 10px; border: 1px solid #333;">
-</div>
-
-### 4. 问政殿 (The Oracle)
-集成 Google Gemini 的 AI 智能助手，解答关于 OpenWrt 与 Zigbee 的“生死难题”。
-<div align="center">
-  <img src="assets/screenshots/oracle-interface.png" alt="Oracle Interface" width="800" style="border-radius: 10px; border: 1px solid #333;">
+  <img src="assets/screenshots/curriculum-tech.png" alt="Lesson Detail" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
 ---
@@ -117,9 +140,11 @@
    ```
 2. 设置环境变量：
    - 创建 `.env.local` 文件
-   - 设置 `GEMINI_API_KEY` 为你的 Gemini API 密钥 (用于 AI 功能)
+   - 设置 `VITE_GEMINI_API_KEY` (AI功能) 和 Supabase 相关 Key (后端数据库)
    ```env
    VITE_GEMINI_API_KEY=your_api_key_here
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 3. 运行开发服务器：
    ```bash
@@ -140,12 +165,13 @@ npm run build
 ## 🧱 技术栈
 
 - **Core**: React 19, TypeScript, Vite
+- **Backend (BaaS)**: Supabase (PostgreSQL, Auth, Realtime)
 - **AI & RAG**: 
   - Google Generative AI SDK (Gemini 2.5 Flash)
   - PDF Parsing & Text Extraction
   - Context Injection
 - **Styling**: Tailwind CSS, Framer Motion (Animations)
-- **Utilities**: html2pdf.js (PDF Export), React Markdown
+- **Utilities**: React Markdown, Lucide Icons
 
 ## 📄 许可证
 
