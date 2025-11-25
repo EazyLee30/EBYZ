@@ -179,7 +179,7 @@ const App: React.FC = () => {
 
       {/* Portal: Render Profile */}
       {showProfile && createPortal(
-         <Profile onBack={handleBack} />,
+         <Profile onBack={handleBack} onRemix={handleRemix} />,
          document.getElementById('modal-root') || document.body
       )}
       
