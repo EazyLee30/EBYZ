@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll, Send, Copy, FileText, Edit2 } from 'lucide-react';
+import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll, Send, Copy, FileText, Edit2, Save } from 'lucide-react';
 import { Lesson, CurriculumModule } from '../types';
 import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
@@ -45,6 +45,11 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
   }, []);
 
   const generateLessonPlan = async () => {
+    if (!user) {
+        setShowAuthModal(true);
+        return;
+    }
+
     setLoading(true);
     
     try {
@@ -181,7 +186,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
         {
           title: lesson.coffinTitle,
           grade: module.grade,
-          content: { markdown: aiContent },
+          content: { markdown: aiContent, published: true },
           user_id: user.id,
           location: 'Unknown (Web)', // 暂时写死，后续可优化
           // parent_id: null 
@@ -247,6 +252,34 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
                     <span className="text-xs font-bold hidden md:inline">发布到排行榜</span>
                  </button>
                  
+                 <button 
+                    onClick={async () => {
+                        if (!user) return setShowAuthModal(true);
+                        try {
+                            // Save as unpublished draft
+                            const { error } = await supabase.from('posts').insert([
+                                {
+                                    title: lesson.coffinTitle,
+                                    grade: module.grade,
+                                    content: { markdown: aiContent, published: false },
+                                    user_id: user.id,
+                                    location: 'Unknown (Web)',
+                                }
+                            ]);
+                            if (error) throw error;
+                            alert('已保存到个人档案！');
+                        } catch (e: any) {
+                            console.error(e);
+                            alert('保存失败：' + e.message);
+                        }
+                    }}
+                    className="p-2.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-emperor-gold transition-colors flex items-center gap-2" 
+                    title="Save to Profile"
+                 >
+                    <Save size={18} />
+                    <span className="text-xs font-bold hidden md:inline">保存到档案</span>
+                 </button>
+
                  <button 
                     onClick={handleCopyMarkdown}
                     className="p-2.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-emperor-gold transition-colors flex items-center gap-2" 
