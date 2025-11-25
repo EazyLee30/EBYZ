@@ -8,6 +8,7 @@ import Oracle from './components/Oracle';
 import LessonDetail from './components/LessonDetail';
 import GradeTabs from './components/GradeTabs';
 import Leaderboard from './components/Leaderboard';
+import Profile from './components/Profile';
 import SpotlightOverlay from './components/ui/SpotlightOverlay';
 import BlurText from './components/ui/BlurText';
 import ShinyText from './components/ui/ShinyText';
@@ -52,6 +53,7 @@ const App: React.FC = () => {
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>(GradeLevel.Six);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
@@ -70,16 +72,24 @@ const App: React.FC = () => {
   }, [selectedGrade]);
 
   // Scroll handler
-  const scrollToSection = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard') => {
+  const scrollToSection = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard' | 'profile') => {
     if (section === 'leaderboard') {
         setShowLeaderboard(true);
         document.body.style.overflow = 'hidden';
         return;
     }
 
-    if (selectedLessonId || showLeaderboard) {
+    if (section === 'profile') {
+        setShowProfile(true);
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    // Reset overlays
+    if (selectedLessonId || showLeaderboard || showProfile) {
         setSelectedLessonId(null);
         setShowLeaderboard(false);
+        setShowProfile(false);
         document.body.style.overflow = 'auto';
         setTimeout(() => performScroll(section), 100);
     } else {
@@ -87,7 +97,7 @@ const App: React.FC = () => {
     }
   };
 
-  const performScroll = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper') => {
+  const performScroll = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard' | 'profile') => {
     if (section === 'whitepaper') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
@@ -116,6 +126,7 @@ const App: React.FC = () => {
   const handleBack = () => {
     setSelectedLessonId(null);
     setShowLeaderboard(false);
+    setShowProfile(false);
     document.body.style.overflow = 'auto';
   };
 
@@ -137,6 +148,12 @@ const App: React.FC = () => {
       {/* Portal: Render Leaderboard */}
       {showLeaderboard && createPortal(
          <Leaderboard onBack={handleBack} />,
+         document.getElementById('modal-root') || document.body
+      )}
+
+      {/* Portal: Render Profile */}
+      {showProfile && createPortal(
+         <Profile onBack={handleBack} />,
          document.getElementById('modal-root') || document.body
       )}
       
@@ -168,7 +185,7 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
       </div>
 
-      <div className={`relative z-10 transition-opacity duration-300 ${(selectedLessonId || showLeaderboard) ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
+      <div className={`relative z-10 transition-opacity duration-300 ${(selectedLessonId || showLeaderboard || showProfile) ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
           
           <Header onNavClick={scrollToSection} onDownload={handleDownload} />
 

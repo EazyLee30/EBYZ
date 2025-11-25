@@ -6,7 +6,7 @@ import { Auth } from './Auth';
 import { supabase } from '../lib/supabase';
 
 interface Props {
-  onNavClick: (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard') => void;
+  onNavClick: (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard' | 'profile') => void;
   onDownload: () => void;
 }
 
@@ -32,7 +32,7 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleMobileNavClick = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard') => {
+  const handleMobileNavClick = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard' | 'profile') => {
     onNavClick(section);
     setIsMobileMenuOpen(false);
   };
@@ -119,7 +119,13 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
 
              {/* Auth Button */}
              {user ? (
-                 <div className="relative group">
+                 <button
+                    onClick={() => onNavClick('profile')}
+                    className="relative group flex items-center gap-2 p-1 pl-3 bg-white/5 hover:bg-white/10 rounded-full border border-white/10 hover:border-emperor-gold/50 transition-all"
+                 >
+                    <span className="text-xs text-gray-300 max-w-[100px] truncate">
+                        {user.email?.split('@')[0]}
+                    </span>
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emperor-gold to-yellow-600 border border-white/20 cursor-pointer overflow-hidden">
                         {user.user_metadata?.avatar_url ? (
                             <img src={user.user_metadata.avatar_url} alt="avatar" className="w-full h-full object-cover" />
@@ -129,18 +135,7 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
                             </div>
                         )}
                     </div>
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-[#151515] border border-gray-800 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all transform origin-top-right z-50">
-                        <div className="p-3 border-b border-gray-800">
-                            <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                        </div>
-                        <button 
-                            onClick={() => supabase.auth.signOut()}
-                            className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5"
-                        >
-                            退出登录
-                        </button>
-                    </div>
-                 </div>
+                 </button>
              ) : (
                  <button
                     onClick={() => setIsAuthModalOpen(true)}
@@ -209,15 +204,18 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
 
                     <div className="flex flex-col gap-4">
                          {user ? (
-                             <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                             <button 
+                                onClick={() => handleMobileNavClick('profile')}
+                                className="flex items-center justify-between p-4 bg-white/5 rounded-xl w-full"
+                             >
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full bg-emperor-gold overflow-hidden">
                                         {user.user_metadata?.avatar_url && <img src={user.user_metadata.avatar_url} className="w-full h-full" />}
                                     </div>
                                     <span className="text-sm text-white truncate max-w-[150px]">{user.email}</span>
                                 </div>
-                                <button onClick={() => supabase.auth.signOut()} className="text-xs text-red-400">退出</button>
-                             </div>
+                                <span className="text-xs text-emperor-gold">档案管理</span>
+                             </button>
                          ) : (
                              <button 
                                 onClick={() => {
