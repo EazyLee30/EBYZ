@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll, Send } from 'lucide-react';
+import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll, Send, Copy, FileText, Edit2 } from 'lucide-react';
 import { Lesson, CurriculumModule } from '../types';
 import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/atom-one-dark.css';
-// @ts-ignore
-import html2pdf from 'html2pdf.js';
 import { supabase } from '../lib/supabase';
 import { Auth } from './Auth';
 import { createPortal } from 'react-dom';
@@ -18,10 +16,12 @@ interface Props {
   lesson: Lesson;
   module: CurriculumModule;
   onBack: () => void;
+  initialContent?: string; // Add initial content for remix
 }
 
-const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
-  const [aiContent, setAiContent] = useState<string>('');
+const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent }) => {
+  const [aiContent, setAiContent] = useState<string>(initialContent || '');
+  const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -88,6 +88,9 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       描述: ${lesson.description}
       模块技术栈: ${module.techStack.join(', ')}
       
+      【用户自定义要求】：
+      ${customPrompt ? `用户特别指定了以下要求，请务必满足：${customPrompt}` : '无额外要求，请按标准流程生成。'}
+
       请遵循以下规则：
       1. **核心素养融合**：必须明确体现【信息意识】、【计算思维】、【数字化学习与创新】、【信息社会责任】四个维度。
       
@@ -137,47 +140,27 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
     }
   };
 
-  const handleDownloadPdf = () => {
-    if (!contentRef.current) return;
-    const element = contentRef.current;
-    
-    const opt = {
-      margin:       [10, 10, 10, 10] as [number, number, number, number],
-      filename:     `${lesson.coffinTitle}_Lesson_Plan.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#1a1a1a' },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // Temporary style adjustment for PDF generation
-    const originalStyle = element.style.cssText;
-    element.style.color = 'black';
-    element.style.backgroundColor = 'white';
-    
-    // Clone the element to modify styles for PDF without affecting UI
-    const clone = element.cloneNode(true) as HTMLElement;
-    clone.style.padding = '20px';
-    clone.style.color = '#000';
-    clone.style.background = '#fff';
-    
-    // Find all text elements in clone and force black color
-    const allElements = clone.querySelectorAll('*');
-    allElements.forEach((el: any) => {
-        el.style.color = '#000';
-        if (el.classList.contains('text-emperor-gold')) {
-            el.style.color = '#b45309'; // Darker gold for white paper
-        }
-        // Fix code blocks
-        if (el.tagName === 'PRE' || el.tagName === 'CODE') {
-            el.style.background = '#f3f4f6';
-            el.style.color = '#1f2937';
-            el.style.border = '1px solid #e5e7eb';
-        }
+  const handleCopyMarkdown = () => {
+    if (!aiContent) return;
+    navigator.clipboard.writeText(aiContent).then(() => {
+        alert("教案内容已复制到剪贴板（法器）！");
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert("复制失败，请手动复制。");
     });
+  };
 
-    html2pdf().from(clone).set(opt).save().then(() => {
-        // Clean up if needed, though we used a clone
-    });
+  const handleDownloadMarkdown = () => {
+    if (!aiContent) return;
+    const blob = new Blob([aiContent], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${lesson.coffinTitle}_Lesson_Plan.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handlePublish = async () => {
@@ -263,13 +246,23 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                     )}
                     <span className="text-xs font-bold hidden md:inline">发布到排行榜</span>
                  </button>
+                 
                  <button 
-                    onClick={handleDownloadPdf}
+                    onClick={handleCopyMarkdown}
                     className="p-2.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-emperor-gold transition-colors flex items-center gap-2" 
-                    title="Download PDF"
+                    title="Copy Markdown"
                  >
-                    <Download size={18} />
-                    <span className="text-xs font-bold hidden md:inline">下载教案</span>
+                    <Copy size={18} />
+                    <span className="text-xs font-bold hidden md:inline">复制内容</span>
+                 </button>
+
+                 <button 
+                    onClick={handleDownloadMarkdown}
+                    className="p-2.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-emperor-gold transition-colors flex items-center gap-2" 
+                    title="Download Markdown"
+                 >
+                    <FileText size={18} />
+                    <span className="text-xs font-bold hidden md:inline">导出 MD</span>
                  </button>
                 </>
              )}
@@ -439,24 +432,40 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                     <div className="h-full w-full rounded-xl bg-[#0f0f0f] p-6 md:p-8 relative overflow-hidden">
                     
                     {!aiContent ? (
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="text-center md:text-left">
-                                <h3 className="text-lg font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2">
-                                    <Sparkles className="text-purple-400" size={18} />
-                                    教案不够阴间？(AI Override)
-                                </h3>
-                                <p className="text-gray-500 text-sm">
-                                    召唤秦大爷重写一份更具“特色”的教案（RAG知识库增强版）。
-                                </p>
+                        <div className="flex flex-col gap-6">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div className="text-center md:text-left">
+                                    <h3 className="text-lg font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2">
+                                        <Sparkles className="text-purple-400" size={18} />
+                                        教案不够阴间？(AI Override)
+                                    </h3>
+                                    <p className="text-gray-500 text-sm">
+                                        召唤秦大爷重写一份更具“特色”的教案（RAG知识库增强版）。
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={generateLessonPlan}
+                                    disabled={loading}
+                                    className="w-full md:w-auto whitespace-nowrap bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-3 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2"
+                                >
+                                    {loading ? <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div> : <Terminal size={16} />}
+                                    {loading ? '通灵中...' : 'AI 生成教案'}
+                                </button>
                             </div>
-                            <button 
-                                onClick={generateLessonPlan}
-                                disabled={loading}
-                                className="w-full md:w-auto whitespace-nowrap bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-3 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2"
-                            >
-                                {loading ? <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div> : <Terminal size={16} />}
-                                {loading ? '通灵中...' : 'AI 生成教案'}
-                            </button>
+
+                            {/* Custom Prompt Input */}
+                            <div className="mt-4">
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">
+                                    <Edit2 size={12} className="inline mr-1" />
+                                    自定义咒语 (Custom Prompt)
+                                </label>
+                                <textarea 
+                                    value={customPrompt}
+                                    onChange={(e) => setCustomPrompt(e.target.value)}
+                                    placeholder="在此输入额外的生成要求，例如：'侧重于硬件连接的安全性' 或 '增加更多小组互动的环节'..."
+                                    className="w-full bg-[#151515] border border-gray-800 rounded-lg p-4 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-emperor-gold/50 focus:ring-1 focus:ring-emperor-gold/50 transition-all min-h-[100px] resize-y"
+                                />
+                            </div>
                         </div>
                     ) : (
                         <div className="animate-fade-in">
@@ -466,8 +475,8 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                                     AI 生成结果 (Generated Plan)
                                 </h3>
                                 <div className="flex gap-2 w-full md:w-auto">
-                                    <button onClick={handleDownloadPdf} className="flex-1 md:flex-none justify-center text-xs text-emperor-gold hover:text-white transition-colors border border-emperor-gold/50 px-3 py-2 md:py-1 rounded hover:border-emperor-gold flex items-center gap-1">
-                                        <Download size={12} /> PDF
+                                    <button onClick={handleDownloadMarkdown} className="flex-1 md:flex-none justify-center text-xs text-emperor-gold hover:text-white transition-colors border border-emperor-gold/50 px-3 py-2 md:py-1 rounded hover:border-emperor-gold flex items-center gap-1">
+                                        <FileText size={12} /> 导出 MD
                                     </button>
                                     <button onClick={() => setAiContent('')} className="flex-1 md:flex-none justify-center text-xs text-gray-500 hover:text-white transition-colors border border-gray-800 px-3 py-2 md:py-1 rounded hover:border-gray-600">
                                         恢复预设

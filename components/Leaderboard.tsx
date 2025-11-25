@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Skull, Trophy, Clock, GitFork, Star, User, ArrowRight } from 'lucide-react';
+import { Skull, Trophy, Clock, GitFork, Star, User, ArrowRight, X, Copy, RefreshCw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import { createPortal } from 'react-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface Post {
   id: string;
@@ -20,13 +24,15 @@ interface Post {
 
 interface Props {
   onBack: () => void;
+  onRemix?: (content: string) => void;
 }
 
-const Leaderboard: React.FC<Props> = ({ onBack }) => {
+const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'hot' | 'new' | 'remix'>('hot');
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     fetchPosts();
@@ -67,6 +73,25 @@ const Leaderboard: React.FC<Props> = ({ onBack }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCopyContent = (content: string) => {
+    navigator.clipboard.writeText(content).then(() => {
+        alert("教案内容已复制到剪贴板！");
+    }).catch(() => {
+        alert("复制失败，请手动复制。");
+    });
+  };
+
+  const handleRemixClick = (post: Post) => {
+      const markdown = post.content?.markdown || '';
+      if (onRemix) {
+          onRemix(markdown);
+      } else {
+          // Fallback if no remix handler provided
+          handleCopyContent(markdown);
+          alert("已复制该教案内容。请前往生成页面，粘贴至自定义咒语区域进行二创。");
+      }
   };
 
   if (error) {
@@ -170,7 +195,8 @@ const Leaderboard: React.FC<Props> = ({ onBack }) => {
                 {posts.map((post, index) => (
                     <div 
                         key={post.id}
-                        className="group bg-[#0a0a0a] border border-white/10 rounded-xl p-6 hover:border-emperor-gold/50 transition-all relative overflow-hidden"
+                        className="group bg-[#0a0a0a] border border-white/10 rounded-xl p-6 hover:border-emperor-gold/50 transition-all relative overflow-hidden cursor-pointer"
+                        onClick={() => setSelectedPost(post)}
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-emperor-gold/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-emperor-gold/10 transition-all"></div>
                         
@@ -224,7 +250,13 @@ const Leaderboard: React.FC<Props> = ({ onBack }) => {
                                     <div className="text-2xl font-bold text-white">{post.remix_count || 0}</div>
                                     <div className="text-xs text-gray-500 uppercase">Remixes</div>
                                 </div>
-                                <button className="px-4 py-2 rounded-lg bg-white/5 hover:bg-emperor-gold hover:text-black transition-colors border border-white/10 text-sm font-bold">
+                                <button 
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedPost(post);
+                                    }}
+                                    className="px-4 py-2 rounded-lg bg-white/5 hover:bg-emperor-gold hover:text-black transition-colors border border-white/10 text-sm font-bold"
+                                >
                                     查看详情
                                 </button>
                             </div>
@@ -234,6 +266,74 @@ const Leaderboard: React.FC<Props> = ({ onBack }) => {
             </div>
         )}
       </div>
+
+      {/* Detail Modal */}
+      <AnimatePresence>
+        {selectedPost && (
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[6000] bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
+                onClick={() => setSelectedPost(null)}
+            >
+                <motion.div 
+                    initial={{ scale: 0.95, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    exit={{ scale: 0.95, y: 20 }}
+                    className="bg-[#0a0a0a] w-full max-w-4xl max-h-[90vh] rounded-2xl border border-white/10 shadow-2xl flex flex-col overflow-hidden"
+                    onClick={e => e.stopPropagation()}
+                >
+                    {/* Modal Header */}
+                    <div className="p-6 border-b border-white/10 flex items-center justify-between bg-[#0f0f0f]">
+                        <div>
+                            <h2 className="text-2xl font-serif font-bold text-white mb-1">{selectedPost.title}</h2>
+                            <div className="flex items-center gap-4 text-sm text-gray-400">
+                                <span className="px-2 py-0.5 bg-emperor-gold/10 text-emperor-gold rounded text-xs border border-emperor-gold/20">{selectedPost.grade}</span>
+                                <span>作者: {selectedPost.profiles?.nickname || '无名氏'}</span>
+                            </div>
+                        </div>
+                        <button 
+                            onClick={() => setSelectedPost(null)}
+                            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white"
+                        >
+                            <X size={20} />
+                        </button>
+                    </div>
+
+                    {/* Modal Content */}
+                    <div className="flex-grow overflow-y-auto p-6 md:p-8 bg-[#050505]">
+                        <div className="prose prose-invert prose-emperor max-w-none prose-headings:text-emperor-gold prose-ul:list-disc prose-ul:ml-4 prose-ol:list-decimal prose-ol:ml-4 prose-a:text-jade-green hover:prose-a:text-white prose-code:bg-[#1a1a1a] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-purple-300 prose-pre:bg-[#080808] prose-pre:border prose-pre:border-white/10">
+                            <ReactMarkdown 
+                                remarkPlugins={[remarkGfm]} 
+                                rehypePlugins={[rehypeHighlight]}
+                            >
+                                {selectedPost.content?.markdown || '无法读取该教案内容，可能是数据已损坏。'}
+                            </ReactMarkdown>
+                        </div>
+                    </div>
+
+                    {/* Modal Footer */}
+                    <div className="p-6 border-t border-white/10 bg-[#0f0f0f] flex justify-end gap-4">
+                        <button 
+                            onClick={() => handleCopyContent(selectedPost.content?.markdown || '')}
+                            className="px-4 py-2 rounded-lg border border-white/10 hover:bg-white/5 text-white font-bold flex items-center gap-2 transition-colors"
+                        >
+                            <Copy size={16} />
+                            复制内容
+                        </button>
+                        <button 
+                            onClick={() => handleRemixClick(selectedPost)}
+                            className="px-6 py-2 rounded-lg bg-emperor-gold hover:bg-yellow-500 text-black font-bold flex items-center gap-2 transition-colors shadow-lg shadow-emperor-gold/20"
+                        >
+                            <RefreshCw size={16} />
+                            以此为基础二创 (Remix)
+                        </button>
+                    </div>
+                </motion.div>
+            </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

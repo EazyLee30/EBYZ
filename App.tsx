@@ -54,6 +54,7 @@ const App: React.FC = () => {
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>(GradeLevel.Six);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [remixContent, setRemixContent] = useState<string | undefined>(undefined);
   
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
@@ -120,13 +121,37 @@ const App: React.FC = () => {
 
   const handleLessonSelect = (lesson: Lesson) => {
     setSelectedLessonId(lesson.id);
+    setRemixContent(undefined); // Clear remix content when selecting a fresh lesson
     document.body.style.overflow = 'hidden';
+  };
+
+  const handleRemix = (content: string) => {
+      // Close leaderboard
+      setShowLeaderboard(false);
+      // We need to open a LessonDetail. 
+      // Ideally we should know WHICH lesson this content belongs to, but since 'posts' only have title/grade,
+      // we might not map back to a specific Lesson ID easily without searching.
+      // For now, let's try to find a generic 'playground' or just default to the first lesson of that grade if possible, 
+      // OR just use the first lesson available to render the detail view.
+      // A better UX: Find lesson by title match?
+      
+      // Simplification: Open the first lesson of Grade 6 as a "Template" but with remix content.
+      // In a real app, we'd store 'lesson_id' in 'posts'.
+      
+      // Let's try to find a matching lesson by title from the content if possible, or just use a default.
+      const defaultLesson = curriculumData[0].units[0].lessons[0];
+      const defaultModule = curriculumData[0];
+      
+      setSelectedLessonId(defaultLesson.id);
+      setRemixContent(content);
+      document.body.style.overflow = 'hidden';
   };
 
   const handleBack = () => {
     setSelectedLessonId(null);
     setShowLeaderboard(false);
     setShowProfile(false);
+    setRemixContent(undefined);
     document.body.style.overflow = 'auto';
   };
 
@@ -141,13 +166,14 @@ const App: React.FC = () => {
             lesson={selectedLessonModulePair.lesson} 
             module={selectedLessonModulePair.module}
             onBack={handleBack} 
+            initialContent={remixContent}
          />,
          document.getElementById('modal-root') || document.body
       )}
 
       {/* Portal: Render Leaderboard */}
       {showLeaderboard && createPortal(
-         <Leaderboard onBack={handleBack} />,
+         <Leaderboard onBack={handleBack} onRemix={handleRemix} />,
          document.getElementById('modal-root') || document.body
       )}
 
