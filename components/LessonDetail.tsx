@@ -210,7 +210,13 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
       alert('发布成功！你的教案已进入冥界档案库。');
     } catch (error: any) {
       console.error('Publish failed:', error);
-      alert(`发布失败：${error.message || '未知错误'}`);
+      
+      let errorMsg = error.message || '未知错误';
+      if (errorMsg.includes('Failed to fetch')) {
+          errorMsg = '网络请求被拦截。请检查：\n1. 网络连接是否正常\n2. 是否开启了广告拦截插件(AdBlock)\n3. Vercel 环境变量配置';
+      }
+      
+      alert(`发布失败：${errorMsg}`);
     } finally {
       setPublishing(false);
     }

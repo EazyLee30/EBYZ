@@ -164,7 +164,7 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="fixed inset-0 top-16 bg-[#0a0a0a] z-40 md:hidden flex flex-col p-6 space-y-6 border-t border-white/10"
+                    className="fixed inset-0 top-[64px] bg-[#0a0a0a] z-[8000] md:hidden flex flex-col p-6 space-y-6 border-t border-white/10 overflow-y-auto"
                 >
                     <nav className="flex flex-col space-y-4">
                         <button 
