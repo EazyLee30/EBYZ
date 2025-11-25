@@ -10,6 +10,9 @@ import 'highlight.js/styles/atom-one-dark.css';
 import html2pdf from 'html2pdf.js';
 import { supabase } from '../lib/supabase';
 import { Auth } from './Auth';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 interface Props {
   lesson: Lesson;
@@ -190,26 +193,24 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
 
     setPublishing(true);
     try {
-      const response = await fetch('/api/publish-lesson', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // 直接在前端插入数据库，利用 RLS 策略
+      const { error } = await supabase.from('posts').insert([
+        {
           title: lesson.coffinTitle,
           grade: module.grade,
           content: { markdown: aiContent },
           user_id: user.id,
-          // parent_id: null // 二创时填这个
-        }),
-      });
+          location: 'Unknown (Web)', // 暂时写死，后续可优化
+          // parent_id: null 
+        }
+      ]);
 
-      if (!response.ok) throw new Error('Failed to publish');
+      if (error) throw error;
 
       alert('发布成功！你的教案已进入冥界档案库。');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Publish failed:', error);
-      alert('发布失败，可能是冥府网络拥堵。');
+      alert(`发布失败：${error.message || '未知错误'}`);
     } finally {
       setPublishing(false);
     }
@@ -269,19 +270,33 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
         </div>
       </div>
 
-      {/* Auth Modal Overlay */}
-      {showAuthModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-            <div className="relative w-full max-w-md">
-                <button 
-                    onClick={() => setShowAuthModal(false)}
-                    className="absolute -top-12 right-0 text-white hover:text-gray-300"
+      {/* Auth Modal Overlay with Portal */}
+      {showAuthModal && createPortal(
+        <AnimatePresence>
+            <div 
+                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                onClick={(e) => {
+                    if (e.target === e.currentTarget) setShowAuthModal(false);
+                }}
+            >
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="relative w-full max-w-md"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-                <Auth />
+                    <button 
+                        onClick={() => setShowAuthModal(false)}
+                        className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all"
+                        title="Close"
+                    >
+                        <X size={24} />
+                    </button>
+                    <Auth />
+                </motion.div>
             </div>
-        </div>
+        </AnimatePresence>,
+        document.body
       )}
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 md:py-16 pb-32 relative z-10">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Skull, Download, Book, Shield, Map, Github, Menu, X, User, Trophy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Auth } from './Auth';
@@ -37,6 +38,7 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
   };
 
   return (
+    <>
     <header className="bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/5 sticky top-0 z-40 transition-all">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         
@@ -242,37 +244,38 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
                 </motion.div>
             )}
         </AnimatePresence>
-
-        {/* Auth Modal */}
-        <AnimatePresence>
-            {isAuthModalOpen && (
-                <div 
-                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-                    onClick={(e) => {
-                        // Close only if clicking the backdrop, not the modal itself
-                        if (e.target === e.currentTarget) setIsAuthModalOpen(false);
-                    }}
-                >
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="relative w-full max-w-md"
-                    >
-                        <button 
-                            onClick={() => setIsAuthModalOpen(false)}
-                            className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all"
-                            title="Close"
-                        >
-                            <X size={24} />
-                        </button>
-                        <Auth />
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
       </div>
     </header>
+
+    {/* Portal for Auth Modal */}
+    {isAuthModalOpen && createPortal(
+        <AnimatePresence>
+            <div 
+                className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                onClick={(e) => {
+                    if (e.target === e.currentTarget) setIsAuthModalOpen(false);
+                }}
+            >
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="relative w-full max-w-md"
+                >
+                    <button 
+                        onClick={() => setIsAuthModalOpen(false)}
+                        className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all"
+                        title="Close"
+                    >
+                        <X size={24} />
+                    </button>
+                    <Auth />
+                </motion.div>
+            </div>
+        </AnimatePresence>,
+        document.body
+    )}
+    </>
   );
 };
 
