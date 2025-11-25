@@ -7,6 +7,7 @@ import ArchitectureDiagram from './components/ArchitectureDiagram';
 import Oracle from './components/Oracle';
 import LessonDetail from './components/LessonDetail';
 import GradeTabs from './components/GradeTabs';
+import Leaderboard from './components/Leaderboard';
 import SpotlightOverlay from './components/ui/SpotlightOverlay';
 import BlurText from './components/ui/BlurText';
 import ShinyText from './components/ui/ShinyText';
@@ -50,6 +51,7 @@ const App: React.FC = () => {
   // State
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [selectedGrade, setSelectedGrade] = useState<GradeLevel>(GradeLevel.Six);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
@@ -68,9 +70,17 @@ const App: React.FC = () => {
   }, [selectedGrade]);
 
   // Scroll handler
-  const scrollToSection = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper') => {
-    if (selectedLessonId) {
+  const scrollToSection = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard') => {
+    if (section === 'leaderboard') {
+        setShowLeaderboard(true);
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    if (selectedLessonId || showLeaderboard) {
         setSelectedLessonId(null);
+        setShowLeaderboard(false);
+        document.body.style.overflow = 'auto';
         setTimeout(() => performScroll(section), 100);
     } else {
         performScroll(section);
@@ -87,6 +97,7 @@ const App: React.FC = () => {
       list: curriculumRef,
       protocol: protocolRef,
     };
+    // @ts-ignore
     refs[section]?.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -104,6 +115,7 @@ const App: React.FC = () => {
 
   const handleBack = () => {
     setSelectedLessonId(null);
+    setShowLeaderboard(false);
     document.body.style.overflow = 'auto';
   };
 
@@ -119,6 +131,12 @@ const App: React.FC = () => {
             module={selectedLessonModulePair.module}
             onBack={handleBack} 
          />,
+         document.getElementById('modal-root') || document.body
+      )}
+
+      {/* Portal: Render Leaderboard */}
+      {showLeaderboard && createPortal(
+         <Leaderboard onBack={handleBack} />,
          document.getElementById('modal-root') || document.body
       )}
       
@@ -150,7 +168,7 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
       </div>
 
-      <div className={`relative z-10 transition-opacity duration-300 ${selectedLessonId ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
+      <div className={`relative z-10 transition-opacity duration-300 ${(selectedLessonId || showLeaderboard) ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
           
           <Header onNavClick={scrollToSection} onDownload={handleDownload} />
 

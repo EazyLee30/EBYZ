@@ -1,14 +1,13 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "framework": "vite",
-  "rewrites": [
+  "headers": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.supabase.co https://*.vercel-insights.com; connect-src 'self' https://*.supabase.co https://*.google-analytics.com wss://*.supabase.co; img-src 'self' data: blob: https://*.githubusercontent.com https://*.googleusercontent.com https://*.supabase.co; style-src 'self' 'unsafe-inline'; font-src 'self' data:;"
+        }
+      ]
     }
   ]
 }
-

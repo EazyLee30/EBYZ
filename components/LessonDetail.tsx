@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, BookOpen, Cpu, Skull, Sparkles, AlertTriangle, Share2, Download, Terminal, Scroll, Send } from 'lucide-react';
 import { Lesson, CurriculumModule } from '../types';
 import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
@@ -8,6 +8,8 @@ import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/atom-one-dark.css';
 // @ts-ignore
 import html2pdf from 'html2pdf.js';
+import { supabase } from '../lib/supabase';
+import { Auth } from './Auth';
 
 interface Props {
   lesson: Lesson;
@@ -18,10 +20,26 @@ interface Props {
 const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
   const [aiContent, setAiContent] = useState<string>('');
   const [loading, setLoading] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   // Check if we have preset content
   const hasPreset = !!lesson.content;
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) setShowAuthModal(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const generateLessonPlan = async () => {
     setLoading(true);
@@ -159,6 +177,44 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
     });
   };
 
+  const handlePublish = async () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    if (!aiContent) {
+      alert('请先生成一份教案再进行发布！');
+      return;
+    }
+
+    setPublishing(true);
+    try {
+      const response = await fetch('/api/publish-lesson', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: lesson.coffinTitle,
+          grade: module.grade,
+          content: { markdown: aiContent },
+          user_id: user.id,
+          // parent_id: null // 二创时填这个
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to publish');
+
+      alert('发布成功！你的教案已进入冥界档案库。');
+    } catch (error) {
+      console.error('Publish failed:', error);
+      alert('发布失败，可能是冥府网络拥堵。');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-[#050505] z-[9999] overflow-y-auto animate-slide-up text-white">
       {/* Background Pattern */}
@@ -186,6 +242,20 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                 <Share2 size={18} />
              </button>
              {aiContent && (
+                <>
+                 <button 
+                    onClick={handlePublish}
+                    disabled={publishing}
+                    className="p-2.5 rounded-lg bg-jade-green/10 text-jade-green hover:bg-jade-green hover:text-black transition-all flex items-center gap-2 border border-jade-green/30" 
+                    title="Publish to Leaderboard"
+                 >
+                    {publishing ? (
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                        <Send size={18} />
+                    )}
+                    <span className="text-xs font-bold hidden md:inline">发布到排行榜</span>
+                 </button>
                  <button 
                     onClick={handleDownloadPdf}
                     className="p-2.5 rounded-lg hover:bg-white/5 text-gray-500 hover:text-emperor-gold transition-colors flex items-center gap-2" 
@@ -194,9 +264,25 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack }) => {
                     <Download size={18} />
                     <span className="text-xs font-bold hidden md:inline">下载教案</span>
                  </button>
+                </>
              )}
         </div>
       </div>
+
+      {/* Auth Modal Overlay */}
+      {showAuthModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <div className="relative w-full max-w-md">
+                <button 
+                    onClick={() => setShowAuthModal(false)}
+                    className="absolute -top-12 right-0 text-white hover:text-gray-300"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <Auth />
+            </div>
+        </div>
+      )}
 
       <div className="max-w-5xl mx-auto px-4 md:px-6 py-10 md:py-16 pb-32 relative z-10">
         {/* Hero Section */}

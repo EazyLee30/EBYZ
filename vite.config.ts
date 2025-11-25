@@ -13,6 +13,8 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
+      // 允许 Vite 读取 NEXT_PUBLIC_ 开头的环境变量（Supabase Vercel 集成默认使用这个前缀）
+      envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
       define: {
         // Expose the API key to the client side safely
         'process.env.GEMINI_API_KEY': JSON.stringify(apiKey),
