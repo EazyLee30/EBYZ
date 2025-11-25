@@ -142,6 +142,34 @@ const Profile: React.FC<Props> = ({ onBack, onRemix }) => {
       }
   };
 
+  const handleUnpublish = async (post: any) => {
+      if (!confirm('确定要撤销发布吗？撤销后该教案将从排行榜下架，变为草稿状态。')) return;
+
+      try {
+          const { error } = await supabase
+            .from('posts')
+            .update({ 
+                content: { ...post.content, published: false }
+            })
+            .eq('id', post.id);
+            
+          if (error) throw error;
+
+          // Update local state
+          setUserPosts(prev => prev.map(p => 
+              p.id === post.id 
+              ? { ...p, content: { ...p.content, published: false } }
+              : p
+          ));
+          setSelectedPost(prev => prev ? { ...prev, content: { ...prev.content, published: false } } : null);
+          
+          alert('已撤销发布，现在是草稿状态。');
+      } catch (error: any) {
+          console.error(error);
+          alert('撤销失败：' + error.message);
+      }
+  };
+
   const handleRemixPost = (post: any) => {
       const markdown = post.content?.markdown || '';
       if (onRemix) {
@@ -359,13 +387,21 @@ const Profile: React.FC<Props> = ({ onBack, onRemix }) => {
                             编辑/二创
                         </button>
 
-                        {selectedPost.content?.published === false && (
+                        {selectedPost.content?.published === false ? (
                             <button 
                                 onClick={() => handlePublishDraft(selectedPost)}
                                 className="px-6 py-2 rounded-lg bg-jade-green hover:bg-emerald-400 text-black font-bold flex items-center gap-2 transition-colors shadow-lg shadow-jade-green/20"
                             >
                                 <Upload size={16} />
                                 正式发布
+                            </button>
+                        ) : (
+                            <button 
+                                onClick={() => handleUnpublish(selectedPost)}
+                                className="px-6 py-2 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-500 font-bold flex items-center gap-2 transition-colors border border-yellow-500/30"
+                            >
+                                <LogOut size={16} className="rotate-180" />
+                                撤销发布
                             </button>
                         )}
                     </div>
