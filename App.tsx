@@ -18,9 +18,10 @@ import RemixEditor from './components/RemixEditor';
 import { Lesson, GradeLevel } from './types';
 import { Cpu, Wifi, Shield, Zap, Github } from 'lucide-react';
 
-import { Auth } from './components/Auth';
-import { X } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import PrivacyPolicy from './components/pages/PrivacyPolicy';
+import TermsOfAfterlife from './components/pages/TermsOfAfterlife';
+import FirmwareUpdate from './components/pages/FirmwareUpdate';
+import ContactMedium from './components/pages/ContactMedium';
 
 const App: React.FC = () => {
   // Navigation Refs
@@ -62,6 +63,7 @@ const App: React.FC = () => {
   const [showRemix, setShowRemix] = useState(false);
   const [remixData, setRemixData] = useState<{ content: string, title?: string, grade?: string } | null>(null);
   const [showGlobalAuth, setShowGlobalAuth] = useState(false);
+  const [activePage, setActivePage] = useState<'privacy' | 'terms' | 'firmware' | 'contact' | null>(null);
   
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
@@ -157,6 +159,7 @@ const App: React.FC = () => {
     setShowProfile(false);
     setShowRemix(false);
     setRemixData(null);
+    setActivePage(null);
     document.body.style.overflow = 'auto';
   };
 
@@ -199,6 +202,24 @@ const App: React.FC = () => {
       {/* Portal: Render Profile */}
       {showProfile && createPortal(
          <Profile onBack={handleBack} onRemix={handleRemix} />,
+         document.getElementById('modal-root') || document.body
+      )}
+
+      {/* Portal: Render Static Pages */}
+      {activePage === 'privacy' && createPortal(
+         <PrivacyPolicy onBack={handleBack} />,
+         document.getElementById('modal-root') || document.body
+      )}
+      {activePage === 'terms' && createPortal(
+         <TermsOfAfterlife onBack={handleBack} />,
+         document.getElementById('modal-root') || document.body
+      )}
+      {activePage === 'firmware' && createPortal(
+         <FirmwareUpdate onBack={handleBack} />,
+         document.getElementById('modal-root') || document.body
+      )}
+      {activePage === 'contact' && createPortal(
+         <ContactMedium onBack={handleBack} />,
          document.getElementById('modal-root') || document.body
       )}
 
@@ -259,7 +280,7 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
       </div>
 
-      <div className={`relative z-10 transition-opacity duration-300 ${(selectedLessonId || showLeaderboard || showProfile) ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
+      <div className={`relative z-10 transition-opacity duration-300 ${(selectedLessonId || showLeaderboard || showProfile || activePage) ? 'opacity-0 pointer-events-none h-0 overflow-hidden' : 'opacity-100'}`}>
           
           <Header onNavClick={scrollToSection} onDownload={handleDownload} />
 
@@ -440,10 +461,10 @@ const App: React.FC = () => {
                    "Death is not the end. It's just a migration to a more stable server."
                  </p>
                  <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-[10px] md:text-xs text-gray-600 uppercase tracking-widest font-mono mb-12">
-                    <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms of Afterlife</a>
-                    <a href="#" className="hover:text-white transition-colors">Firmware Update</a>
-                    <a href="#" className="hover:text-white transition-colors">Contact Medium</a>
+                    <button onClick={() => setActivePage('privacy')} className="hover:text-white transition-colors">Privacy Policy</button>
+                    <button onClick={() => setActivePage('terms')} className="hover:text-white transition-colors">Terms of Afterlife</button>
+                    <button onClick={() => setActivePage('firmware')} className="hover:text-white transition-colors">Firmware Update</button>
+                    <button onClick={() => setActivePage('contact')} className="hover:text-white transition-colors">Contact Medium</button>
                  </div>
                  <p className="text-gray-700 text-[10px] md:text-xs">
                    &copy; 2025 沪上嘻嘻生 | Designed in Qin Dynasty, Assembled in Hell.
