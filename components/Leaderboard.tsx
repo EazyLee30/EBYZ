@@ -111,8 +111,14 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
   const handleLike = async (e: React.MouseEvent, post: Post) => {
       e.stopPropagation();
       
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+          alert("请先登录再进行点赞！");
+          return;
+      }
+
       if (likedPosts.has(post.id)) {
-          // Already liked (client-side check only for now)
+          // Already liked
           return; 
       }
 
