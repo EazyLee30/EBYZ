@@ -59,8 +59,8 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
             </h1>
             <div className="flex flex-col items-center gap-2 text-gray-600">
                 <p className="text-lg">（2025年11月）</p>
-                <p className="font-bold text-black">中华人民共和国 · 沪上嘻嘻生</p>
-                <p>国务院新闻办公室（模拟） 发布</p>
+                <p className="font-bold text-black">冥界特别行政区 · 沪上嘻嘻生</p>
+                <p>冥府最高新闻发布署 发布</p>
             </div>
         </header>
 
@@ -157,7 +157,7 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
         <div className="mt-20 flex justify-end">
             <div className="relative">
                 <div className="text-center space-y-2 z-10 relative">
-                    <p className="font-bold text-lg">国务院新闻办公室（模拟）</p>
+                    <p className="font-bold text-lg">冥府最高新闻发布署</p>
                     <p className="text-gray-600">2025年11月26日</p>
                 </div>
                 {/* Red Seal Stamp */}
