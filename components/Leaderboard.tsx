@@ -103,7 +103,13 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
     });
   };
 
-  const handleRemixClick = (post: Post) => {
+  const handleRemixClick = async (post: Post) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+          alert("请先登录冥府终端，方可进行二创！");
+          return;
+      }
+      
       const markdown = post.content?.markdown || '';
       if (onRemix) {
           // @ts-ignore
