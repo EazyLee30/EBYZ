@@ -71,20 +71,31 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
          const kb = await import('@/src/data/knowledge.json');
          const data = kb.default || kb;
          
-         // Precision Filtering based on Grade
+         // Precision Filtering based on Grade & Title Keywords
          const targetGrade = module.grade.split('：')[0]; // e.g. "六年级"
+         const titleKeywords = lesson.originalTitle.replace(/第.+[课|节|章]/g, '').trim(); // e.g. "过程与控制"
 
-         knowledgeContext = (data as any[] || [])
-            .filter(chunk => {
-                // Metadata Filtering
-                if (chunk.metadata && chunk.metadata.grade) {
-                    return chunk.metadata.grade === targetGrade;
-                }
-                // Fallback for legacy chunks without metadata
-                return chunk.content.includes(targetGrade);
-            })
+         // 1. First, filter by Grade (Metadata Filtering)
+         const gradeChunks = (data as any[] || []).filter(chunk => {
+             if (chunk.metadata && chunk.metadata.grade) {
+                 return chunk.metadata.grade === targetGrade;
+             }
+             return chunk.content.includes(targetGrade);
+         });
+
+         // 2. Second, try to find chunks matching the lesson title (Fuzzy Search)
+         const relevantChunks = gradeChunks.filter(chunk => {
+             const unitMatch = chunk.metadata?.unit && chunk.metadata.unit.includes(titleKeywords);
+             const contentMatch = chunk.content.includes(titleKeywords);
+             return unitMatch || contentMatch;
+         });
+
+         // 3. Fallback: If no specific relevant chunks found, use the whole grade chunks (capped)
+         // But limit to first 5 chunks to avoid context overflow if fallback happens
+         const finalChunks = relevantChunks.length > 0 ? relevantChunks : gradeChunks.slice(0, 5);
+
+         knowledgeContext = finalChunks
             .map(chunk => {
-                // Truncate only if chunk is excessively large, otherwise use full chunk
                 const content = chunk.content.length > 8000 ? chunk.content.substring(0, 8000) + '...' : chunk.content;
                 const unitTitle = chunk.metadata?.unit || chunk.filename || '参考资料';
                 return `[参考资料: ${unitTitle}]\n${content}`;

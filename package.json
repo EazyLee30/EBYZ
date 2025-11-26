@@ -9,7 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "extract-knowledge": "node scripts/extract.mjs"
+    "extract": "node scripts/extract.cjs"
   },
   "dependencies": {
     "@google/genai": "^1.30.0",

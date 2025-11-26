@@ -61,9 +61,50 @@ const RemixEditor: React.FC<Props> = ({ initialContent = '', initialTitle = '', 
       
       const ai = new GoogleGenAI({ apiKey });
       
+      // RAG Context for Remix
+      let knowledgeContext = '';
+      try {
+         // @ts-ignore
+         const kb = await import('@/src/data/knowledge.json');
+         const data = kb.default || kb;
+         
+         // Precision Filtering based on Grade & Title
+         const targetGrade = grade.split('：')[0]; // e.g. "六年级"
+         const titleKeywords = title.replace(/第.+[课|节|章]/g, '').trim();
+
+         const gradeChunks = (data as any[] || []).filter(chunk => {
+             if (chunk.metadata && chunk.metadata.grade) {
+                 return chunk.metadata.grade === targetGrade;
+             }
+             return chunk.content.includes(targetGrade);
+         });
+
+         const relevantChunks = gradeChunks.filter(chunk => {
+             const unitMatch = chunk.metadata?.unit && chunk.metadata.unit.includes(titleKeywords);
+             const contentMatch = chunk.content.includes(titleKeywords);
+             return unitMatch || contentMatch;
+         });
+
+         const finalChunks = relevantChunks.length > 0 ? relevantChunks : gradeChunks.slice(0, 5);
+
+         knowledgeContext = finalChunks
+            .map(chunk => {
+                const content = chunk.content.length > 8000 ? chunk.content.substring(0, 8000) + '...' : chunk.content;
+                const unitTitle = chunk.metadata?.unit || chunk.filename || '参考资料';
+                return `[原书参考资料: ${unitTitle}]\n${content}`;
+            })
+            .join('\n\n');
+            
+      } catch (e) {
+         console.warn('Failed to load knowledge base', e);
+      }
+
       const prompt = `
       请基于以下教案内容进行**二创（Remix）**或优化。
       目标：保持原教案的核心主题，但根据用户的新要求进行调整。
+      
+      【原书知识库参考 (RAG Context)】：
+      ${knowledgeContext}
       
       【原教案内容】：
       ${aiContent.substring(0, 5000)}... (截断以防过长)
@@ -73,7 +114,7 @@ const RemixEditor: React.FC<Props> = ({ initialContent = '', initialTitle = '', 
       
       【用户二创要求 (Custom Prompt)】：
       ${customPrompt ? customPrompt : '请优化语言，增加更多互动环节，使其更加生动有趣。'}
-
+      
       请遵循以下规则：
       1. **核心素养融合**：必须明确体现【信息意识】、【计算思维】、【数字化学习与创新】、【信息社会责任】四个维度。
       
