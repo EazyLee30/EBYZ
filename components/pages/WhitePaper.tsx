@@ -26,14 +26,26 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
                 </h1>
             </div>
             <div className="flex items-center gap-4">
-                <a
-                    href="/paper.pdf"
-                    download="人均嬴政白皮书.pdf"
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
-                    title="下载PDF"
-                >
-                    <Download size={20} />
-                </a>
+                <div className="flex items-center gap-3 border-r border-white/20 pr-4">
+                    <a
+                        href="/paper.pdf"
+                        download="人均嬴政白皮书.pdf"
+                        className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 rounded transition-colors text-sm"
+                        title="下载白皮书PDF"
+                    >
+                        <Download size={18} />
+                        <span className="hidden md:inline">白皮书</span>
+                    </a>
+                    <a
+                        href="/academic_paper.pdf"
+                        download="学术论文.pdf"
+                        className="flex items-center gap-2 px-3 py-1.5 hover:bg-white/10 rounded transition-colors text-sm"
+                        title="下载学术论文PDF"
+                    >
+                        <Download size={18} />
+                        <span className="hidden md:inline">论文</span>
+                    </a>
+                </div>
                 <button 
                     onClick={() => window.print()}
                     className="p-2 hover:bg-white/10 rounded-full transition-colors"
