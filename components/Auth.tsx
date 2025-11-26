@@ -31,7 +31,7 @@ export function Auth() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-            redirectTo: window.location.origin,
+            redirectTo: window.location.href, // Redirect back to the current page
         }
       });
       if (error) throw error;
@@ -49,7 +49,7 @@ export function Auth() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: window.location.href, // Redirect back to the current page
         }
       });
       if (error) throw error;

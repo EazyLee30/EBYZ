@@ -36,13 +36,24 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    // Load liked posts from local storage
-    const savedLikes = localStorage.getItem('liked_posts');
-    if (savedLikes) {
-        setLikedPosts(new Set(JSON.parse(savedLikes)));
-    }
     fetchPosts();
+    checkUserLikes();
   }, [filter]);
+
+  const checkUserLikes = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    
+    // Fetch all post IDs liked by this user
+    const { data } = await supabase
+        .from('post_likes')
+        .select('post_id')
+        .eq('user_id', user.id);
+        
+    if (data) {
+        setLikedPosts(new Set(data.map(item => item.post_id)));
+    }
+  };
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -117,37 +128,46 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
           return;
       }
 
-      if (likedPosts.has(post.id)) {
-          // Already liked
-          return; 
-      }
-
-      // Optimistic update
-      const newLikesCount = (post.likes_count || 0) + 1;
+      const isLiked = likedPosts.has(post.id);
+      
+      // Optimistic Update
+      const newLikesCount = (post.likes_count || 0) + (isLiked ? -1 : 1);
+      
+      // Update local posts state
       setPosts(prev => prev.map(p => p.id === post.id ? { ...p, likes_count: newLikesCount } : p));
       if (selectedPost && selectedPost.id === post.id) {
           setSelectedPost(prev => prev ? { ...prev, likes_count: newLikesCount } : null);
       }
 
-      // Update local storage
-      const newLikedPosts = new Set(likedPosts).add(post.id);
-      setLikedPosts(newLikedPosts);
-      localStorage.setItem('liked_posts', JSON.stringify(Array.from(newLikedPosts)));
+      // Update local liked set
+      setLikedPosts(prev => {
+          const next = new Set(prev);
+          if (isLiked) next.delete(post.id);
+          else next.add(post.id);
+          return next;
+      });
 
       try {
-          // Increment in Supabase
-          // Since we don't have a dedicated increment RPC set up yet, we fetch fresh then update to be safer, 
-          // or just blindly update with our optimistic value (less safe for concurrency but okay for now).
-          // Best effort with current permissions:
-          const { error } = await supabase
-            .from('posts')
-            .update({ likes_count: newLikesCount })
-            .eq('id', post.id);
-
-          if (error) throw error;
-      } catch (error) {
-          console.error('Failed to update like count', error);
-          // Revert on error? Maybe too jarring. Let's just keep it optimistic for the user session.
+          if (isLiked) {
+              // Unlike
+              const { error } = await supabase
+                .from('post_likes')
+                .delete()
+                .eq('user_id', user.id)
+                .eq('post_id', post.id);
+              if (error) throw error;
+          } else {
+              // Like
+              const { error } = await supabase
+                .from('post_likes')
+                .insert({ user_id: user.id, post_id: post.id });
+              if (error) throw error;
+          }
+      } catch (error: any) {
+          console.error('Failed to toggle like:', error);
+          // Revert optimistic update on error (optional, but good practice)
+          alert("操作失败，请重试");
+          // Revert logic could go here...
       }
   };
 
