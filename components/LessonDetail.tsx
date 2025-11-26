@@ -70,12 +70,27 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
          // @ts-ignore
          const kb = await import('@/src/data/knowledge.json');
          const data = kb.default || kb;
-         knowledgeContext = (data as any[] || []).map(k => {
-            if (k.content.includes(module.grade) || k.content.includes('物联网') || k.content.includes('控制')) {
-                return `[参考资料: ${k.filename}]\n${k.content.substring(0, 3000)}...`; // Truncate to avoid token limits
-            }
-            return '';
-         }).filter(Boolean).join('\n\n');
+         
+         // Precision Filtering based on Grade
+         const targetGrade = module.grade.split('：')[0]; // e.g. "六年级"
+
+         knowledgeContext = (data as any[] || [])
+            .filter(chunk => {
+                // Metadata Filtering
+                if (chunk.metadata && chunk.metadata.grade) {
+                    return chunk.metadata.grade === targetGrade;
+                }
+                // Fallback for legacy chunks without metadata
+                return chunk.content.includes(targetGrade);
+            })
+            .map(chunk => {
+                // Truncate only if chunk is excessively large, otherwise use full chunk
+                const content = chunk.content.length > 8000 ? chunk.content.substring(0, 8000) + '...' : chunk.content;
+                const unitTitle = chunk.metadata?.unit || chunk.filename || '参考资料';
+                return `[参考资料: ${unitTitle}]\n${content}`;
+            })
+            .join('\n\n');
+            
       } catch (e) {
          console.warn('Failed to load knowledge base', e);
       }
