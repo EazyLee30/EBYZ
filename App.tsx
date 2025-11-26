@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import Header from './components/Header';
 import CurriculumCard from './components/CurriculumCard';
 import ArchitectureDiagram from './components/ArchitectureDiagram';
@@ -66,6 +66,26 @@ const App: React.FC = () => {
   const [showGlobalAuth, setShowGlobalAuth] = useState(false);
   const [activePage, setActivePage] = useState<'privacy' | 'terms' | 'firmware' | 'contact' | 'whitepaper' | null>(null);
   
+  // Effect to handle URL routing for /whitepaper
+  useEffect(() => {
+    // Check initial URL
+    if (window.location.pathname === '/whitepaper') {
+      setActivePage('whitepaper');
+    }
+
+    // Handle browser back/forward buttons
+    const handlePopState = () => {
+       if (window.location.pathname === '/whitepaper') {
+          setActivePage('whitepaper');
+       } else {
+          setActivePage(null);
+       }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
     if (!selectedLessonId) return null;
@@ -111,6 +131,7 @@ const App: React.FC = () => {
   const performScroll = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard' | 'profile') => {
     if (section === 'whitepaper') {
         setActivePage('whitepaper');
+        window.history.pushState({}, '', '/whitepaper');
         return;
     }
     const refs = {
@@ -160,6 +181,11 @@ const App: React.FC = () => {
     setShowProfile(false);
     setShowRemix(false);
     setRemixData(null);
+    
+    if (activePage === 'whitepaper') {
+        window.history.pushState({}, '', '/');
+    }
+    
     setActivePage(null);
     document.body.style.overflow = 'auto';
   };
