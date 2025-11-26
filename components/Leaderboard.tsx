@@ -25,9 +25,10 @@ interface Post {
 interface Props {
   onBack: () => void;
   onRemix?: (content: string) => void;
+  onRequireAuth?: () => void;
 }
 
-const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
+const Leaderboard: React.FC<Props> = ({ onBack, onRemix, onRequireAuth }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +107,11 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
   const handleRemixClick = async (post: Post) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-          alert("请先登录冥府终端，方可进行二创！");
+          if (onRequireAuth) {
+              onRequireAuth();
+          } else {
+              alert("请先登录冥府终端，方可进行二创！");
+          }
           return;
       }
       
@@ -130,7 +135,20 @@ const Leaderboard: React.FC<Props> = ({ onBack, onRemix }) => {
       
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-          alert("请先登录再进行点赞！");
+          // Show auth modal instead of alert
+          // Since we can't easily access setShowAuthModal here (it's inside App/Profile/RemixEditor), 
+          // we can trigger a custom event or use a callback if provided. 
+          // But to be quick and cleaner, let's just use alert for now OR if the user really wants the modal,
+          // we need to pass a callback from App.tsx.
+          // Let's modify App.tsx to pass an `onRequireLogin` callback.
+          // For now, let's stick to the current implementation and check if I can improve it.
+          // Wait, the user asked to "弹出登录页" (pop up login page).
+          // I will assume I need to pass a callback `onRequireAuth` to Leaderboard.
+          if (onRequireAuth) {
+              onRequireAuth();
+          } else {
+             alert("请先登录再进行点赞！");
+          }
           return;
       }
 

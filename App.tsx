@@ -18,6 +18,10 @@ import RemixEditor from './components/RemixEditor';
 import { Lesson, GradeLevel } from './types';
 import { Cpu, Wifi, Shield, Zap, Github } from 'lucide-react';
 
+import { Auth } from './components/Auth';
+import { X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+
 const App: React.FC = () => {
   // Navigation Refs
   const blueprintRef = useRef<HTMLDivElement>(null);
@@ -57,6 +61,7 @@ const App: React.FC = () => {
   const [showProfile, setShowProfile] = useState(false);
   const [showRemix, setShowRemix] = useState(false);
   const [remixData, setRemixData] = useState<{ content: string, title?: string, grade?: string } | null>(null);
+  const [showGlobalAuth, setShowGlobalAuth] = useState(false);
   
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
@@ -183,7 +188,11 @@ const App: React.FC = () => {
 
       {/* Portal: Render Leaderboard */}
       {showLeaderboard && createPortal(
-         <Leaderboard onBack={handleBack} onRemix={handleRemix} />,
+         <Leaderboard 
+            onBack={handleBack} 
+            onRemix={handleRemix} 
+            onRequireAuth={() => setShowGlobalAuth(true)}
+         />,
          document.getElementById('modal-root') || document.body
       )}
 
@@ -191,6 +200,35 @@ const App: React.FC = () => {
       {showProfile && createPortal(
          <Profile onBack={handleBack} onRemix={handleRemix} />,
          document.getElementById('modal-root') || document.body
+      )}
+
+      {/* Global Auth Modal */}
+      {showGlobalAuth && createPortal(
+        <AnimatePresence>
+            <div 
+                className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                onClick={(e) => {
+                    if (e.target === e.currentTarget) setShowGlobalAuth(false);
+                }}
+            >
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="relative w-full max-w-md"
+                >
+                    <button 
+                        onClick={() => setShowGlobalAuth(false)}
+                        className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full transition-all"
+                        title="Close"
+                    >
+                        <X size={24} />
+                    </button>
+                    <Auth />
+                </motion.div>
+            </div>
+        </AnimatePresence>,
+        document.body
       )}
       
       <motion.div
