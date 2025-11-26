@@ -22,6 +22,7 @@ import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import TermsOfAfterlife from './components/pages/TermsOfAfterlife';
 import FirmwareUpdate from './components/pages/FirmwareUpdate';
 import ContactMedium from './components/pages/ContactMedium';
+import WhitePaper from './components/pages/WhitePaper';
 
 const App: React.FC = () => {
   // Navigation Refs
@@ -63,7 +64,7 @@ const App: React.FC = () => {
   const [showRemix, setShowRemix] = useState(false);
   const [remixData, setRemixData] = useState<{ content: string, title?: string, grade?: string } | null>(null);
   const [showGlobalAuth, setShowGlobalAuth] = useState(false);
-  const [activePage, setActivePage] = useState<'privacy' | 'terms' | 'firmware' | 'contact' | null>(null);
+  const [activePage, setActivePage] = useState<'privacy' | 'terms' | 'firmware' | 'contact' | 'whitepaper' | null>(null);
   
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
@@ -109,7 +110,7 @@ const App: React.FC = () => {
 
   const performScroll = (section: 'blueprint' | 'list' | 'protocol' | 'whitepaper' | 'leaderboard' | 'profile') => {
     if (section === 'whitepaper') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setActivePage('whitepaper');
         return;
     }
     const refs = {
@@ -220,6 +221,10 @@ const App: React.FC = () => {
       )}
       {activePage === 'contact' && createPortal(
          <ContactMedium onBack={handleBack} />,
+         document.getElementById('modal-root') || document.body
+      )}
+      {activePage === 'whitepaper' && createPortal(
+         <WhitePaper onBack={handleBack} />,
          document.getElementById('modal-root') || document.body
       )}
 
