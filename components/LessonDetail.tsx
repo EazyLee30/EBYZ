@@ -464,7 +464,21 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
                     <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5"></div>
                     <div className="h-full w-full rounded-xl bg-[#0f0f0f] p-6 md:p-8 relative overflow-hidden">
                     
-                    {!aiContent ? (
+                    {!user ? (
+                        <div className="flex flex-col items-center justify-center h-48 gap-4 text-center">
+                            <Skull size={48} className="text-gray-700" />
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-400 mb-1">只有入殓师才能通灵</h3>
+                                <p className="text-gray-600 text-sm">请先登录冥府终端，方可召唤 AI 生成定制教案。</p>
+                            </div>
+                            <button 
+                                onClick={() => setShowAuthModal(true)}
+                                className="px-6 py-2 bg-white/5 hover:bg-emperor-gold hover:text-black text-white font-bold rounded-full transition-all border border-white/10 text-sm"
+                            >
+                                登入终端
+                            </button>
+                        </div>
+                    ) : !aiContent ? (
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div className="text-center md:text-left">
