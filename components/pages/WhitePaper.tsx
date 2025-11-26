@@ -80,12 +80,12 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
         <nav className="mb-16 bg-gray-50 p-8 rounded-lg border border-gray-200">
             <h3 className="text-xl font-bold mb-4 text-center">目录</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base">
-                <a href="#section-1" className="hover:text-[#003366] hover:underline">一、 绪论：死亡的数字化转型</a>
-                <a href="#section-2" className="hover:text-[#003366] hover:underline">二、 智能棺材：系统架构与技术路径</a>
-                <a href="#section-3" className="hover:text-[#003366] hover:underline">三、 通灵协议：RAG 2.0 检索增强生成</a>
-                <a href="#section-4" className="hover:text-[#003366] hover:underline">四、 封神机制：共识算法与社区治理</a>
-                <a href="#section-5" className="hover:text-[#003366] hover:underline">五、 核心素养导向的教育实践</a>
-                <a href="#section-6" className="hover:text-[#003366] hover:underline">六、 结论与展望</a>
+                <a href="#section-1" className="hover:text-[#003366] hover:underline block">一、 绪论：死亡的数字化转型</a>
+                <a href="#section-2" className="hover:text-[#003366] hover:underline block">二、 智能棺材：系统架构与技术路径</a>
+                <a href="#section-3" className="hover:text-[#003366] hover:underline block">三、 通灵协议：RAG 2.0 检索增强生成</a>
+                <a href="#section-4" className="hover:text-[#003366] hover:underline block">四、 封神机制：共识算法与社区治理</a>
+                <a href="#section-5" className="hover:text-[#003366] hover:underline block">五、 核心素养导向的教育实践</a>
+                <a href="#section-6" className="hover:text-[#003366] hover:underline block">六、 结论与展望</a>
             </div>
         </nav>
 
@@ -148,7 +148,7 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
                 <h4 className="text-lg font-bold mt-6 mb-3 text-[#003366]">2.2 智能中枢：Home Assistant</h4>
                 <p>
                     Home Assistant 被重新定义为“守陵人”，负责执行预设的自动化脚本（Automation）。
-                    例如，当 <code>sensor.coffin_humidity</code> > 60% 时，自动触发 <code>switch.dehumidifier</code>，
+                    例如，当 <code>sensor.coffin_humidity</code> &gt; 60% 时，自动触发 <code>switch.dehumidifier</code>，
                     确保“遗体”处于最佳保存状态。
                 </p>
             </section>
