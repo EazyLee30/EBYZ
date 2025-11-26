@@ -145,14 +145,14 @@ export function Auth() {
                 <span>GitHub 账号</span>
             </button>
 
-            {/* Wallet Login (Mock) */}
+            {/* Email Login (Prominent) */}
             <button
-                onClick={handleWalletLogin}
+                onClick={() => setMode('email')}
                 disabled={loading}
-                className="relative group flex items-center justify-center w-full gap-3 px-4 py-3 text-sm font-bold text-gray-500 transition-all bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-jade-green/30 hover:text-jade-green disabled:opacity-50"
+                className="relative group flex items-center justify-center w-full gap-3 px-4 py-3 text-sm font-bold text-black transition-all bg-jade-green rounded-lg hover:bg-emerald-400 disabled:opacity-50 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
             >
-                <Wallet className="w-5 h-5" />
-                <span>连接法器 (Wallet)</span>
+                <Mail className="w-5 h-5" />
+                <span>使用邮箱登录 (Magic Link)</span>
             </button>
 
             <div className="relative flex items-center py-3">
@@ -161,13 +161,14 @@ export function Auth() {
                 <div className="flex-grow border-t border-gray-800"></div>
             </div>
 
-            {/* Email Toggle */}
+            {/* Wallet Login (Secondary) */}
             <button
-                onClick={() => setMode('email')}
-                className="w-full px-4 py-2 text-sm font-medium text-gray-500 transition-colors hover:text-white flex items-center justify-center gap-2"
+                onClick={handleWalletLogin}
+                disabled={loading}
+                className="relative group flex items-center justify-center w-full gap-3 px-4 py-3 text-sm font-bold text-gray-500 transition-all bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-purple-500/30 hover:text-purple-400 disabled:opacity-50"
             >
-                <Mail size={16} />
-                使用邮箱通信
+                <Wallet className="w-5 h-5" />
+                <span>连接法器 (Wallet)</span>
             </button>
         </div>
       ) : (

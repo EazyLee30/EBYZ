@@ -228,7 +228,7 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
                                         className="w-full bg-emperor-gold/10 border border-emperor-gold/30 text-emperor-gold font-bold py-4 rounded-xl flex items-center justify-center gap-2"
                                     >
                                         <User size={20} />
-                                        登录账户
+                                        登入冥府终端
                                     </button>
                                 )}
                                 
