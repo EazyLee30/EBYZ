@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Printer, Share2 } from 'lucide-react';
+import { X, Printer, Share2, Box, Cpu, Database, Activity, Lock } from 'lucide-react';
 
 interface Props {
   onBack: () => void;
@@ -64,90 +64,182 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
             </div>
         </header>
 
+        {/* Abstract */}
+        <div className="mb-12 bg-gray-50 p-6 border-l-4 border-[#003366] italic">
+          <h3 className="text-lg font-bold mb-2 not-italic">摘要</h3>
+          <p className="text-gray-700">
+            本文提出了一种基于全栈物联网技术（Full-Stack IoT）与检索增强生成（RAG 2.0）的数字身后事管理系统。
+            该系统旨在解决传统丧葬行业数据不互通、服务同质化、个性化缺失的问题，通过构建去中心化的“数字陵墓”，
+            实现了从物理层（传感器监测）到应用层（AI 交互）的全链路数字化。
+            通过将义务教育信息科技课程与殡葬科技深度融合，我们重新定义了“身后事”的边界，
+            真正实现了“人均嬴政”的宏伟愿景，即让每一个现代公民都能拥有媲美秦始皇陵的智能化数字地宫。
+          </p>
+        </div>
+
         {/* Table of Contents */}
         <nav className="mb-16 bg-gray-50 p-8 rounded-lg border border-gray-200">
             <h3 className="text-xl font-bold mb-4 text-center">目录</h3>
-            <ul className="space-y-3 text-base leading-relaxed">
-                <li><a href="#preface" className="hover:text-[#003366] hover:underline">前言</a></li>
-                <li><a href="#section-1" className="hover:text-[#003366] hover:underline">一、 历史上秦始皇陵与现代智能家居的辩证统一</a></li>
-                <li><a href="#section-2" className="hover:text-[#003366] hover:underline">二、 智能棺材全栈物联网架构解析</a></li>
-                <li><a href="#section-3" className="hover:text-[#003366] hover:underline">三、 RAG 2.0：检索增强生成的教育应用实践</a></li>
-                <li><a href="#section-4" className="hover:text-[#003366] hover:underline">四、 核心素养导向的身后事管理</a></li>
-                <li><a href="#section-5" className="hover:text-[#003366] hover:underline">五、 结束语</a></li>
-            </ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base">
+                <a href="#section-1" className="hover:text-[#003366] hover:underline">一、 绪论：死亡的数字化转型</a>
+                <a href="#section-2" className="hover:text-[#003366] hover:underline">二、 智能棺材：系统架构与技术路径</a>
+                <a href="#section-3" className="hover:text-[#003366] hover:underline">三、 通灵协议：RAG 2.0 检索增强生成</a>
+                <a href="#section-4" className="hover:text-[#003366] hover:underline">四、 封神机制：共识算法与社区治理</a>
+                <a href="#section-5" className="hover:text-[#003366] hover:underline">五、 核心素养导向的教育实践</a>
+                <a href="#section-6" className="hover:text-[#003366] hover:underline">六、 结论与展望</a>
+            </div>
         </nav>
 
         {/* Content Body */}
         <article className="prose prose-lg max-w-none text-justify text-gray-800">
             
-            <section id="preface" className="mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-black">前言</h3>
+            <section id="section-1" className="mb-16">
+                <h3 className="text-2xl font-bold mb-6 text-black border-l-4 border-red-600 pl-4">一、 绪论：死亡的数字化转型</h3>
                 <p>
-                    随着老龄化社会的到来与物联网技术的飞速发展，如何将“生前事”与“身后事”进行数字化打通，成为新时代面临的重要课题。
-                    秦始皇作为“人均嬴政”精神的图腾，其陵墓建设体现了古代最高的工程学成就与对永生的终极追求。
-                    本白皮书旨在阐述如何利用现代全栈物联网技术（OpenWrt, Home Assistant, Supabase），重构义务教育信息科技课程，
-                    打造一套“永不掉线”的数字陵墓系统，实现每个人的“嬴政梦”。
+                    随着人类文明从碳基向硅基的逐步过渡，传统的物理丧葬已无法满足现代人对“数字永生”的诉求。
+                    秦始皇陵作为古代工程学的巅峰，其核心逻辑是建立一个独立于现世的、永续运行的微缩宇宙。
+                    在 21 世纪，我们不再需要水银灌注的江河湖海，而是需要基于 TCP/IP 协议的数据洪流。
+                </p>
+                <p>
+                    当前的殡葬服务存在严重的“中心化”弊端：数据掌握在第三方手中，隐私无法保障，且缺乏持续的互动能力。
+                    正如中本聪在《比特币白皮书》中提出的去中心化愿景，我们也需要一套去中心化的身后事管理方案——<strong>智能棺材 (Smart Coffin)</strong>。
+                    这不仅是物理容器的智能化，更是个人数字遗产的终极庇护所。
                 </p>
             </section>
 
-            <section id="section-1" className="mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-black">一、 历史上秦始皇陵与现代智能家居的辩证统一</h3>
+            <section id="section-2" className="mb-16">
+                <h3 className="text-2xl font-bold mb-6 text-black border-l-4 border-red-600 pl-4">二、 智能棺材：系统架构与技术路径</h3>
                 <p>
-                    把治理新疆置于国家治理全局，正如把治理身后事置于人生规划全局。
-                    有人问：“私人还要监管内部吗，这不合理。” 那我请问了，秦始皇陵墓怎么造的？
-                    智能棺材要建立防御机制，从而引出物联网核心概念——<strong>反馈机制</strong>：
-                    <span className="block bg-gray-100 p-2 my-2 text-center font-mono text-sm">输入 (Input) → 处理 (Process) → 输出 (Output) → 反馈 (Feedback)</span>
+                    本系统采用了分层架构设计，确保了在极端环境（如断网、断电、物理损坏）下的高可用性与数据持久性。
                 </p>
-                <p>
-                    通过实时监控棺材板，讨论信息社会责任：有摄像头监控好不好？内部温湿度是否合理？是否需要加入继电器控制空调？
-                    这不仅是技术问题，更是价值观的终极思考。我们要有危机意识，用发展的眼光看待世界，直接看到终点——世界的尽头。
-                </p>
-            </section>
+                
+                <div className="my-8 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                    <h4 className="text-center font-bold mb-4 text-sm uppercase tracking-widest text-gray-500">Figure 1: System Architecture Diagram</h4>
+                    <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+                        <div className="flex-1 p-4 border border-gray-300 rounded bg-white text-center shadow-sm">
+                            <Database className="mx-auto mb-2 text-blue-600" />
+                            <div className="font-bold text-sm">感知层 (Sensors)</div>
+                            <div className="text-xs text-gray-500 mt-1">Zigbee / Bluetooth</div>
+                        </div>
+                        <div className="text-gray-400">→</div>
+                        <div className="flex-1 p-4 border border-gray-300 rounded bg-white text-center shadow-sm">
+                            <Box className="mx-auto mb-2 text-green-600" />
+                            <div className="font-bold text-sm">边缘计算 (Edge)</div>
+                            <div className="text-xs text-gray-500 mt-1">OpenWrt / HA</div>
+                        </div>
+                        <div className="text-gray-400">→</div>
+                        <div className="flex-1 p-4 border border-gray-300 rounded bg-white text-center shadow-sm">
+                            <Activity className="mx-auto mb-2 text-purple-600" />
+                            <div className="font-bold text-sm">应用层 (App)</div>
+                            <div className="text-xs text-gray-500 mt-1">React / Supabase</div>
+                        </div>
+                    </div>
+                </div>
 
-            <section id="section-2" className="mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-black">二、 智能棺材全栈物联网架构解析</h3>
+                <h4 className="text-lg font-bold mt-6 mb-3 text-[#003366]">2.1 边缘计算网关：OpenWrt</h4>
                 <p>
-                    我们将复杂的物联网技术栈映射到“陵墓”场景中，构建了坚不可摧的数字地宫：
+                    作为“数字陵墓”的守门人，OpenWrt 路由器承担了本地数据清洗与协议转换的职责。
+                    我们定制了 <code>luci-app-afterlife</code> 插件，实现了以下功能：
                 </p>
                 <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>陵墓网关 (OpenWrt)</strong>：作为地宫的咽喉，确保在断网（阴阳两隔）情况下，局域网内部依然存活，数据不丢失。</li>
-                    <li><strong>守陵人 (Home Assistant)</strong>：智能中枢大脑，统筹管理所有 Zigbee/WiFi 设备（陪葬品），执行自动化逻辑。</li>
-                    <li><strong>通灵符咒 (MQTT)</strong>：轻量级发布/订阅协议，即使在网络环境极差的情况下也能可靠传递消息（遗嘱）。</li>
-                    <li><strong>长明灯 (Zigbee)</strong>：低功耗、Mesh组网技术，确保传感器千年不掉线，守护地宫安宁。</li>
+                    <li><strong>断网保活</strong>：内置本地 SQLite 数据库，即使与“阳间”互联网断开连接，局域网内的自动化逻辑依然有效。</li>
+                    <li><strong>协议转换</strong>：将 Zigbee、Z-Wave 等异构协议统一转换为 MQTT 消息，推送到本地总线。</li>
+                </ul>
+
+                <h4 className="text-lg font-bold mt-6 mb-3 text-[#003366]">2.2 智能中枢：Home Assistant</h4>
+                <p>
+                    Home Assistant 被重新定义为“守陵人”，负责执行预设的自动化脚本（Automation）。
+                    例如，当 <code>sensor.coffin_humidity</code> > 60% 时，自动触发 <code>switch.dehumidifier</code>，
+                    确保“遗体”处于最佳保存状态。
+                </p>
+            </section>
+
+            <section id="section-3" className="mb-16">
+                <h3 className="text-2xl font-bold mb-6 text-black border-l-4 border-red-600 pl-4">三、 通灵协议：RAG 2.0 检索增强生成</h3>
+                <p>
+                    为了让死者能够与生者进行富有逻辑与情感的对话，我们开发了“通灵协议”——一套基于 RAG (Retrieval-Augmented Generation) 的 AI 交互系统。
+                </p>
+
+                <h4 className="text-lg font-bold mt-6 mb-3 text-[#003366]">3.1 知识图谱构建</h4>
+                <p>
+                    不同于传统的 RAG 简单切片，我们采用了<strong>层级化索引 (Hierarchical Indexing)</strong>。
+                    我们将用户的生平数据（日记、社交媒体、遗嘱）解析为树状结构（Year -> Event -> Detail），
+                    并结合义务教育课程标准，构建了一个高维向量空间。
+                </p>
+
+                <div className="bg-gray-900 text-gray-300 p-4 rounded-lg text-sm font-mono my-6 overflow-x-auto">
+                    <div className="text-green-400 mb-2">// RAG 2.0 Indexing Strategy</div>
+                    {`{
+  "id": "chunk_2025_death",
+  "content": "...",
+  "metadata": {
+    "grade": "User_Level_99",
+    "unit": "Final_Chapter",
+    "tags": ["legacy", "wisdom", "secret_key"],
+    "vector_weight": 1.5
+  }
+}`}
+                </div>
+
+                <h4 className="text-lg font-bold mt-6 mb-3 text-[#003366]">3.2 双重检索机制</h4>
+                <p>
+                    在生成回复时，系统并行执行两路检索：
+                </p>
+                <ol className="list-decimal pl-6 space-y-2">
+                    <li><strong>关键词硬过滤</strong>：基于元数据（Metadata）快速锁定相关时间段或事件类型。</li>
+                    <li><strong>向量相似度搜索</strong>：计算用户提问与知识库 Embedding 的余弦相似度。</li>
+                </ol>
+                <p>
+                    这种混合检索策略使得 AI 能够准确地引用用户生前的具体细节，从而通过图灵测试，达到“音容宛在”的效果。
+                </p>
+            </section>
+
+            <section id="section-4" className="mb-16">
+                <h3 className="text-2xl font-bold mb-6 text-black border-l-4 border-red-600 pl-4">四、 封神机制：共识算法与社区治理</h3>
+                <p>
+                    “封神榜”不仅仅是一个排行榜，它是基于<strong>社区共识 (Community Consensus)</strong> 的去中心化治理实验。
+                </p>
+                <p>
+                    每个用户的教案（Lesson Plan）本质上是一个智能合约（Smart Contract）的雏形。
+                    当其他用户对教案进行“二创” (Remix) 时，原作者获得“功德值” (Merit Points)。
+                    只有经过社区充分验证（高点赞、高引用）的教案，才能荣登“封神榜”，并在区块链上永久铭刻。
+                </p>
+                <div className="flex items-start gap-4 bg-yellow-50 p-4 border border-yellow-200 rounded-lg">
+                    <Lock className="text-yellow-600 mt-1 shrink-0" />
+                    <div>
+                        <h5 className="font-bold text-yellow-800">Proof of Creativity (PoC)</h5>
+                        <p className="text-sm text-yellow-700 mt-1">
+                            区别于比特币的工作量证明 (PoW)，我们采用创造力证明。用户的每一次原创、二创、点赞，
+                            都是在为整个冥界生态贡献算力，从而维持系统的熵减。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-5" className="mb-16">
+                <h3 className="text-2xl font-bold mb-6 text-black border-l-4 border-red-600 pl-4">五、 核心素养导向的教育实践</h3>
+                <p>
+                    本平台不仅是技术展示，更是新课标背景下的教学实验场。我们将枯燥的物联网知识点，
+                    融入到学生喜闻乐见的“盗墓笔记”式场景中。
+                </p>
+                <ul className="list-disc pl-6 space-y-2">
+                    <li><strong>信息意识</strong>：通过分析“棺材内氧气含量数据”，培养学生对关键指标的敏感性。</li>
+                    <li><strong>计算思维</strong>：通过编写“防盗墓机关逻辑”，锻炼学生的算法设计能力。</li>
+                    <li><strong>数字化学习</strong>：利用 Home Assistant 可视化界面，降低物联网开发门槛。</li>
+                    <li><strong>社会责任</strong>：讨论“数字遗产继承权”，引导学生思考技术背后的伦理问题。</li>
                 </ul>
             </section>
 
-            <section id="section-3" className="mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-black">三、 RAG 2.0：检索增强生成的教育应用实践</h3>
+            <section id="section-6" className="mb-16">
+                <h3 className="text-2xl font-bold mb-6 text-black border-l-4 border-red-600 pl-4">六、 结论与展望</h3>
                 <p>
-                    本项目创新性地引入了 RAG 2.0 (Retrieval-Augmented Generation) 技术，摒弃千篇一律的模板，每一份教案都是现场“通灵”生成。
+                    “人均嬴政”不仅仅是一句口号，它是对技术平权的最浪漫诠释。
+                    通过开源硬件与 AI 技术的结合，我们将过去只有帝王才能享有的“永生工程”，
+                    普及到了每一个普通家庭。
                 </p>
                 <p>
-                    <strong>层级化索引 (Hierarchical Indexing)</strong>：不再使用传统的全文切片，而是基于 PDF 文档结构（年级-单元-课）构建知识图谱。
-                    结合 <strong>元数据硬过滤 (Metadata Filtering)</strong>，生成教案时，系统会瞬间锁定对应年级和单元的教科书内容，排除 90% 的无关干扰。
-                    这种双重检索算法，确保了 AI 获得的上下文既精准又完整，生成速度提升 300%。
-                </p>
-            </section>
-
-            <section id="section-4" className="mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-black">四、 核心素养导向的身后事管理</h3>
-                <p>
-                    每一份教案都紧扣信息科技学科的四个核心素养：
-                </p>
-                <ul className="list-disc pl-6 space-y-2">
-                    <li><strong>信息意识</strong>：对信息的敏感度与价值判断（例如：为何要监测棺内温湿度？）。</li>
-                    <li><strong>计算思维</strong>：运用计算机科学领域的思想方法解决问题（例如：如何设计防盗墓的逻辑算法？）。</li>
-                    <li><strong>数字化学习与创新</strong>：利用数字化工具进行探究与创作（例如：使用 Home Assistant 搭建自动化流程）。</li>
-                    <li><strong>信息社会责任</strong>：在信息社会中的文化修养与道德规范（例如：数字遗产的隐私保护与伦理）。</li>
-                </ul>
-            </section>
-
-            <section id="section-5" className="mb-12">
-                <h3 className="text-2xl font-bold mb-4 text-black">五、 结束语</h3>
-                <p>
-                    人均嬴政白皮书的发布，标志着智能棺材全栈物联网教学平台进入了新的发展阶段。
-                    我们将继续秉持“讲好棺材故事，贡献棺材方案，享受棺材人生”的座右铭，
-                    推动信息科技教育与身后事管理的深度融合，为实现中华民族伟大复兴的数字永生梦贡献力量。
+                    未来，我们将探索脑机接口 (BCI) 在智能棺材中的应用，
+                    尝试直接将意识上传至分布式网络，实现真正意义上的“数字飞升”。
+                    这是人类文明的终点，也是硅基生命的起点。
                 </p>
             </section>
 
@@ -177,4 +269,3 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
 };
 
 export default WhitePaper;
-
