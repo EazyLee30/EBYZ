@@ -162,7 +162,7 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
                 <h4 className="text-lg font-bold mt-6 mb-3 text-[#003366]">3.1 知识图谱构建</h4>
                 <p>
                     不同于传统的 RAG 简单切片，我们采用了<strong>层级化索引 (Hierarchical Indexing)</strong>。
-                    我们将用户的生平数据（日记、社交媒体、遗嘱）解析为树状结构（Year -> Event -> Detail），
+                    我们将用户的生平数据（日记、社交媒体、遗嘱）解析为树状结构（Year -&gt; Event -&gt; Detail），
                     并结合义务教育课程标准，构建了一个高维向量空间。
                 </p>
 
