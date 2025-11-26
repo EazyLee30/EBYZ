@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Printer, Share2, Box, Cpu, Database, Activity, Lock, Network, Server, Code } from 'lucide-react';
+import { X, Printer, Share2, Box, Cpu, Database, Activity, Lock, Network, Server, Code, Download } from 'lucide-react';
 
 interface Props {
   onBack: () => void;
@@ -26,6 +26,14 @@ const WhitePaper: React.FC<Props> = ({ onBack }) => {
                 </h1>
             </div>
             <div className="flex items-center gap-4">
+                <a
+                    href="/paper.pdf"
+                    download="人均嬴政白皮书.pdf"
+                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                    title="下载PDF"
+                >
+                    <Download size={20} />
+                </a>
                 <button 
                     onClick={() => window.print()}
                     className="p-2 hover:bg-white/10 rounded-full transition-colors"
