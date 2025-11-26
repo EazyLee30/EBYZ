@@ -1,0 +1,31 @@
+\contentsline {section}{\numberline {1}引言}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}研究背景}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}研究意义}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}理论基础与教学策略}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}情境认知与隐喻教学}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}素养本位的大单元设计}{4}{subsection.2.2}%
+\contentsline {section}{\numberline {3}EBYZ平台系统架构设计}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}边缘感知层：硬件抽象与异构融合}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}边缘计算层：OpenWrt与高可用网关}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}云端基础设施：Serverless与BaaS架构}{6}{subsection.3.3}%
+\contentsline {section}{\numberline {4}核心技术创新：RAG 2.0 知识增强引擎}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}数据管道与层级化索引构建}{7}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}PDF解析与结构化提取}{7}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}树状索引结构}{9}{subsubsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.2}混合检索算法（Hybrid Search Strategy）}{9}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}三级过滤策略}{9}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}混合检索公式}{10}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}上下文注入与截断策略}{10}{subsubsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.3}提示工程与角色扮演（Persona Engineering）}{11}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}RAG性能优化与效果评估}{13}{subsection.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.1}检索效率提升}{13}{subsubsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.2}生成质量评估}{13}{subsubsection.4.4.2}%
+\contentsline {section}{\numberline {5}课程实施与评价体系}{13}{section.5}%
+\contentsline {subsection}{\numberline {5.1}教学活动设计案例}{13}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}基于DAO的多元评价机制}{13}{subsection.5.2}%
+\contentsline {section}{\numberline {6}核心素养的达成度分析}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}信息意识}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}计算思维}{15}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}数字化学习与创新}{15}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}信息社会责任}{15}{subsection.6.4}%
+\contentsline {section}{\numberline {7}结论与展望}{15}{section.7}%

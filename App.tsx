@@ -85,7 +85,7 @@ const App: React.FC = () => {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
-
+  
   // Computed helpers
   const selectedLessonModulePair = React.useMemo(() => {
     if (!selectedLessonId) return null;
@@ -172,7 +172,7 @@ const App: React.FC = () => {
 
       setRemixData(data);
       setShowRemix(true);
-      document.body.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
   };
 
   const handleBack = () => {

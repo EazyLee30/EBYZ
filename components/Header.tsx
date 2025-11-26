@@ -159,40 +159,40 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
 
         {/* Mobile Navigation Overlay - Portal */}
         {createPortal(
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
+        <AnimatePresence>
+            {isMobileMenuOpen && (
+                <motion.div
                         initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                         className="fixed inset-0 top-[64px] bg-[#0a0a0a] z-[9000] md:hidden flex flex-col border-t border-white/10 overflow-y-auto"
-                    >
+                >
                         <div className="flex flex-col p-6 space-y-6 pb-24">
-                            <nav className="flex flex-col space-y-4">
-                                <button 
-                                    onClick={() => handleMobileNavClick('blueprint')}
-                                    className="flex items-center gap-4 p-4 rounded-xl bg-white/5 text-gray-200 hover:bg-white/10 hover:text-emperor-gold transition-colors"
-                                >
-                                    <Map size={20} />
-                                    <span className="text-lg font-bold">墓室蓝图</span>
-                                </button>
+                    <nav className="flex flex-col space-y-4">
+                        <button 
+                            onClick={() => handleMobileNavClick('blueprint')}
+                            className="flex items-center gap-4 p-4 rounded-xl bg-white/5 text-gray-200 hover:bg-white/10 hover:text-emperor-gold transition-colors"
+                        >
+                            <Map size={20} />
+                            <span className="text-lg font-bold">墓室蓝图</span>
+                        </button>
 
-                                <button 
-                                    onClick={() => handleMobileNavClick('list')}
-                                    className="flex items-center gap-4 p-4 rounded-xl bg-white/5 text-gray-200 hover:bg-white/10 hover:text-emperor-gold transition-colors"
-                                >
-                                    <Book size={20} />
-                                    <span className="text-lg font-bold">陪葬品清单</span>
-                                </button>
+                        <button 
+                            onClick={() => handleMobileNavClick('list')}
+                            className="flex items-center gap-4 p-4 rounded-xl bg-white/5 text-gray-200 hover:bg-white/10 hover:text-emperor-gold transition-colors"
+                        >
+                            <Book size={20} />
+                            <span className="text-lg font-bold">陪葬品清单</span>
+                        </button>
 
-                                <button 
-                                    onClick={() => handleMobileNavClick('protocol')}
-                                    className="flex items-center gap-4 p-4 rounded-xl bg-white/5 text-gray-200 hover:bg-white/10 hover:text-emperor-gold transition-colors"
-                                >
-                                    <Shield size={20} />
-                                    <span className="text-lg font-bold">守陵协议</span>
-                                </button>
+                        <button 
+                            onClick={() => handleMobileNavClick('protocol')}
+                            className="flex items-center gap-4 p-4 rounded-xl bg-white/5 text-gray-200 hover:bg-white/10 hover:text-emperor-gold transition-colors"
+                        >
+                            <Shield size={20} />
+                            <span className="text-lg font-bold">守陵协议</span>
+                        </button>
 
                                 <button 
                                     onClick={() => handleMobileNavClick('leaderboard')}
@@ -201,11 +201,11 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
                                     <Trophy size={20} />
                                     <span className="text-lg font-bold">封神榜</span>
                                 </button>
-                            </nav>
+                    </nav>
 
-                            <div className="h-[1px] bg-white/10 w-full my-4"></div>
+                    <div className="h-[1px] bg-white/10 w-full my-4"></div>
 
-                            <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4">
                                 {user ? (
                                     <button 
                                         onClick={() => handleMobileNavClick('profile')}
@@ -226,26 +226,26 @@ const Header: React.FC<Props> = ({ onNavClick, onDownload }) => {
                                             setIsAuthModalOpen(true);
                                         }}
                                         className="w-full bg-emperor-gold/10 border border-emperor-gold/30 text-emperor-gold font-bold py-4 rounded-xl flex items-center justify-center gap-2"
-                                    >
+                         >
                                         <User size={20} />
                                         登入冥府终端
                                     </button>
                                 )}
-                                
-                                <button 
-                                    onClick={() => {
-                                        onDownload();
-                                        setIsMobileMenuOpen(false);
-                                    }}
-                                    className="w-full bg-emperor-gold text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-yellow-500 transition-colors"
-                                >
-                                    <Download size={20} />
-                                    下载固件
-                                </button>
+
+                         <button 
+                            onClick={() => {
+                                onDownload();
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className="w-full bg-emperor-gold text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-yellow-500 transition-colors"
+                         >
+                            <Download size={20} />
+                            下载固件
+                         </button>
                             </div>
-                        </div>
-                    </motion.div>
-                )}
+                    </div>
+                </motion.div>
+            )}
             </AnimatePresence>,
             document.body
         )}

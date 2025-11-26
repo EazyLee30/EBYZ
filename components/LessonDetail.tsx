@@ -121,7 +121,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
       
       【用户自定义要求】：
       ${customPrompt ? `用户特别指定了以下要求，请务必满足：${customPrompt}` : '无额外要求，请按标准流程生成。'}
-
+      
       请遵循以下规则：
       1. **核心素养融合**：必须明确体现【信息意识】、【计算思维】、【数字化学习与创新】、【信息社会责任】四个维度。
       
@@ -180,7 +180,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
         alert("复制失败，请手动复制。");
     });
   };
-
+    
   const handleDownloadMarkdown = () => {
     if (!aiContent) return;
     const blob = new Blob([aiContent], { type: 'text/markdown' });
@@ -228,7 +228,7 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
       let errorMsg = error.message || '未知错误';
       if (errorMsg.includes('Failed to fetch')) {
           errorMsg = '网络请求被拦截。请检查：\n1. 网络连接是否正常\n2. 是否开启了广告拦截插件(AdBlock)\n3. Vercel 环境变量配置';
-      }
+        }
       
       alert(`发布失败：${errorMsg}`);
     } finally {
@@ -506,24 +506,24 @@ const LessonDetail: React.FC<Props> = ({ lesson, module, onBack, initialContent 
                         </div>
                     ) : !aiContent ? (
                         <div className="flex flex-col gap-6">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                                <div className="text-center md:text-left">
-                                    <h3 className="text-lg font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2">
-                                        <Sparkles className="text-purple-400" size={18} />
-                                        教案不够阴间？(AI Override)
-                                    </h3>
-                                    <p className="text-gray-500 text-sm">
-                                        召唤秦大爷重写一份更具“特色”的教案（RAG知识库增强版）。
-                                    </p>
-                                </div>
-                                <button 
-                                    onClick={generateLessonPlan}
-                                    disabled={loading}
-                                    className="w-full md:w-auto whitespace-nowrap bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-3 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2"
-                                >
-                                    {loading ? <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div> : <Terminal size={16} />}
-                                    {loading ? '通灵中...' : 'AI 生成教案'}
-                                </button>
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left">
+                                <h3 className="text-lg font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2">
+                                    <Sparkles className="text-purple-400" size={18} />
+                                    教案不够阴间？(AI Override)
+                                </h3>
+                                <p className="text-gray-500 text-sm">
+                                    召唤秦大爷重写一份更具“特色”的教案（RAG知识库增强版）。
+                                </p>
+                            </div>
+                            <button 
+                                onClick={generateLessonPlan}
+                                disabled={loading}
+                                className="w-full md:w-auto whitespace-nowrap bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-3 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2"
+                            >
+                                {loading ? <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div> : <Terminal size={16} />}
+                                {loading ? '通灵中...' : 'AI 生成教案'}
+                            </button>
                             </div>
 
                             {/* Custom Prompt Input */}

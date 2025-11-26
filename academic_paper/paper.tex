@@ -1,0 +1,480 @@
+% !TeX program = xelatex
+\documentclass[12pt,a4paper,fontset=fandol]{ctexart}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{enumitem}
+
+% 页面设置
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small 面向核心素养的初中信息科技跨学科项目式学习设计与实践}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14.5pt}
+
+% 标题格式优化
+\ctexset{
+    section = {
+        format += \heiti\zihao{3}\bfseries,
+        aftername = \hspace{0.5em},
+        beforeskip = 1.2em,
+        afterskip = 0.8em
+    },
+    subsection = {
+        format += \heiti\zihao{4}\bfseries,
+        aftername = \hspace{0.5em},
+        beforeskip = 0.8em,
+        afterskip = 0.5em
+    },
+    subsubsection = {
+        format += \heiti\zihao{-4},
+        aftername = \hspace{0.5em}
+    }
+}
+
+% 目录设置
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+% 代码块设置
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
+\definecolor{codeblue}{rgb}{0.1,0.1,0.8}
+\definecolor{codepurple}{rgb}{0.5,0,0.5}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codepurple}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codeblue},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{codegray}
+}
+\lstset{style=mystyle}
+
+% 论文信息
+\title{\heiti\zihao{2}\bfseries 面向核心素养的初中信息科技跨学科项目式学习设计与实践\\[0.5em] \large ——基于“智能身后事管理系统”的全栈物联网与RAG技术探索}
+\author{\fangsong 沪上嘻嘻生$^{1}$ \quad 冥府最高新闻发布署$^{2}$ \\[0.3em] \small $^{1}$冥界特别行政区教育科学研究院 \quad $^{2}$冥府中央委员会}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\kaishu
+\noindent \textbf{摘要：} 随着《义务教育课程方案（2022年版）》的颁布，基础教育课程改革进入核心素养时代。新课标强调“做中学”、“用中学”与“创中学”，要求通过真实情境下的项目实践培养学生的数字素养。本文针对当前信息科技教学中情境创设浅表化、技术实践低幼化的痛点，提出并实现了一种基于“智能身后事管理系统”（EBYZ）的跨学科项目式学习（PBL）模式。
+
+该系统构建了一个从边缘感知到云端认知的全栈物联网（AIoT）教学平台，创新性地融合了OpenWrt边缘计算、Supabase云原生架构以及RAG 2.0（检索增强生成）人工智能技术。在技术路线上，本文详细阐述了基于层级化索引（Hierarchical Indexing）的知识库构建、混合检索（Hybrid Search）算法优化以及“通灵协议”中的提示工程策略。
+
+教学实践表明，该模式通过极具张力的“数字陵墓”隐喻，有效激发了学生的探究兴趣，在解决“断网保活”、“数字遗产继承”等真实复杂问题中，显著提升了学生的信息意识、计算思维、数字化学习与创新及信息社会责任，为新时代信息科技教育提供了具有前瞻性的范式参考。
+
+\vspace{0.5em}
+\noindent \textbf{关键词：} 核心素养；项目式学习；全栈物联网；检索增强生成（RAG）；OpenWrt；数字遗产
+\end{abstract}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{引言}
+\subsection{研究背景}
+数字化生存已成为当代青少年的基本生存方式。2022年版《义务教育信息科技课程标准》明确指出，信息科技课程应从单纯的操作技能训练转向学科核心素养的培育，倡导基于真实情境的项目式学习\cite{moe2022}。然而，现有的教学实践中常存在“假项目”、“浅探究”现象，学生往往在简化的模拟环境中操作，缺乏对真实技术复杂性的体验与应对。
+
+\subsection{研究意义}
+本研究试图打破常规，引入“智能身后事管理系统”（Project EBYZ: EveryBody YingZheng）这一具有强烈冲击力与哲学思辨性的主题。通过构建一个包含感知、传输、处理、控制与反馈闭环的全栈物联网系统，让学生在“为自己构建数字来世”的极端情境中，深入理解物联网协议的鲁棒性、数据隐私的边界以及人工智能的伦理挑战。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{assets/screenshots/home-hero.png}
+    \caption{EBYZ 平台首页：赛博朋克风格的“数字陵墓”入口}
+    \label{fig:home-hero}
+\end{figure}
+
+\section{理论基础与教学策略}
+\subsection{情境认知与隐喻教学}
+情境认知理论认为，知识是情境化的，通过活动不断发展。本研究采用了“数字陵墓”作为智能家居系统的深度隐喻：
+\begin{itemize}
+    \item \textbf{OpenWrt网关} $\rightarrow$ \textbf{陵墓入口（墓门）}：物理世界与数字世界的边界，负责安全过滤与流量控制。
+    \item \textbf{Home Assistant} $\rightarrow$ \textbf{守陵人}：全天候运行的自动化中枢，执行既定的守护逻辑。
+    \item \textbf{MQTT消息} $\rightarrow$ \textbf{符咒/遗嘱}：轻量级、低带宽下的高可靠信息传递载体。
+\end{itemize}
+这种隐喻不仅消解了技术枯燥感，更迫使学生从“千年不朽”的视角审视系统的稳定性（High Availability）与持久性（Persistence）。
+
+\subsection{素养本位的大单元设计}
+遵循“逆向设计”原则，以核心素养为导向重构单元目标：
+\begin{itemize}
+    \item \textbf{六年级（过程与控制）}：聚焦物理信号的数字化，理解反馈控制回路。
+    \item \textbf{七年级（互联网应用）}：聚焦网络通信协议，掌握IP寻址与路由机制。
+    \item \textbf{八年级（物联网实践）}：聚焦系统集成与数据智能，探索跨设备联动与AI应用。
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/screenshots/curriculum-overview.png}
+    \caption{课程大纲概览：分年级的项目式学习规划}
+    \label{fig:curriculum}
+\end{figure}
+
+\section{EBYZ平台系统架构设计}
+本平台采用现代化的“端-边-云-智”四层架构，如图\ref{fig:architecture}所示。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{assets/screenshots/system-architecture.png}
+    \caption{EBYZ 全栈物联网与AI系统架构图}
+    \label{fig:architecture}
+\end{figure}
+
+\subsection{边缘感知层：硬件抽象与异构融合}
+感知层由各类环境传感器（温湿度、气体、震动）与执行器（继电器、伺服电机）组成。为了解决硬件碎片化问题，我们引入了\textbf{Zigbee2MQTT}中间件：
+\begin{itemize}
+    \item \textbf{协议转换}：将Zigbee 3.0协议帧解包，转换为标准的JSON格式MQTT Payload。
+    \item \textbf{设备解耦}：上层应用只需订阅 \texttt{zigbee2mqtt/\#} 主题，无需关心底层硬件差异。
+\end{itemize}
+
+\subsection{边缘计算层：OpenWrt与高可用网关}
+网关层采用基于Linux内核的OpenWrt系统，核心模块 \texttt{luci-app-afterlife} 实现了以下关键技术：
+\begin{enumerate}
+    \item \textbf{断网保活机制（Offline Survival Mode）}：内置轻量级SQLite数据库。当WAN口心跳检测（ICMP Keepalive）失败时，系统自动切断云端同步，转为本地存储模式，确保自动化逻辑（如防盗墓报警）在物理隔离状态下依然生效。
+    \item \textbf{本地消息队列}：部署Mosquitto Broker，实现局域网内的低延迟设备通信（<10ms）。
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{assets/screenshots/product-showcase.png}
+    \caption{边缘计算硬件设施：OpenWrt网关与中枢系统}
+    \label{fig:product}
+\end{figure}
+
+\subsection{云端基础设施：Serverless与BaaS架构}
+云端基于Supabase构建，充分利用Serverless架构的弹性优势：
+\begin{itemize}
+    \item \textbf{认证鉴权}：整合OAuth2.0协议，支持Google、GitHub及Magic Link（邮件魔术链接）登录，保障用户身份安全。
+    \item \textbf{行级安全策略（RLS）}：在PostgreSQL数据库层面强制执行访问控制。例如，教案表（posts）的策略定义为：
+    \begin{lstlisting}[language=SQL]
+CREATE POLICY "Users can only update their own posts"
+ON posts FOR UPDATE USING (auth.uid() = user_id);
+    \end{lstlisting}
+    \item \textbf{实时同步}：利用Postgres WAL日志复制技术，通过WebSocket向前端推送毫秒级的数据变更（如封神榜排名的实时刷新）。
+\end{itemize}
+
+\section{核心技术创新：RAG 2.0 知识增强引擎}
+本平台最大的技术创新在于引入了RAG 2.0（Retrieval-Augmented Generation）技术，构建了“通灵协议”（Oracle Protocol）。不同于传统的基于全文切片的RAG 1.0，本系统针对教育场景进行了深度优化。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/screenshots/oracle-protocol.png}
+    \caption{通灵协议：RAG 2.0 驱动的智能交互界面}
+    \label{fig:oracle}
+\end{figure}
+
+\subsection{数据管道与层级化索引构建}
+\subsubsection{PDF解析与结构化提取}
+系统首先通过 \texttt{pdf-extraction} 库解析教材PDF，提取原始文本。核心代码如代码清单\ref{code:extract}所示：
+
+\begin{lstlisting}[language=Python, caption=知识库提取脚本（extract.cjs）, label=code:extract]
+const fs = require('fs');
+const path = require('path');
+const pdf = require('pdf-extraction');
+
+// 解析文件名元数据
+function parseFilename(filename) {
+  const parts = filename.replace('.pdf', '').split('+');
+  let grade = '未知年级';
+  let subject = '未知科目';
+  
+  parts.forEach(part => {
+    if (part.includes('六年级')) grade = '六年级';
+    if (part.includes('七年级')) grade = '七年级';
+    if (part.includes('八年级')) grade = '八年级';
+    
+    if (part.includes('过程与控制')) subject = '过程与控制';
+    if (part.includes('互联网')) subject = '互联网应用与创新';
+    if (part.includes('物联网')) subject = '物联网实践与探索';
+  });
+  
+  return { grade, subject };
+}
+
+// 基于文档结构的智能分块
+function chunkTextByStructure(text, baseMetadata) {
+  const chunks = [];
+  // 正则匹配单元标题：如"第一单元"、"模块一"
+  const unitRegex = /(第[一二三四五六七八九十]+单元|模块[一二三四五六七八九十]+)\s*[:：]?\s*([^\n]+)?/g;
+  
+  let match;
+  let lastIndex = 0;
+  let lastUnitTitle = '前言/概述';
+  
+  while ((match = unitRegex.exec(text)) !== null) {
+    const startIndex = match.index;
+    const unitName = match[0];
+    
+    // 保存前一个分块
+    if (startIndex > lastIndex) {
+      const content = text.substring(lastIndex, startIndex).trim();
+      if (content.length > 100) {
+        chunks.push({
+          id: `${baseMetadata.grade}_${chunks.length}`,
+          content: content,
+          metadata: {
+            ...baseMetadata,
+            unit: lastUnitTitle,
+            type: 'section',
+            length: content.length
+          }
+        });
+      }
+    }
+    
+    lastIndex = startIndex;
+    lastUnitTitle = unitName.trim();
+  }
+  
+  // 添加最后一个分块
+  if (lastIndex < text.length) {
+    const content = text.substring(lastIndex).trim();
+    if (content.length > 100) {
+      chunks.push({
+        id: `${baseMetadata.grade}_${chunks.length}`,
+        content: content,
+        metadata: {
+          ...baseMetadata,
+          unit: lastUnitTitle,
+          type: 'section',
+          length: content.length
+        }
+      });
+    }
+  }
+  
+  return chunks;
+}
+\end{lstlisting}
+
+\subsubsection{树状索引结构}
+系统将非结构化文本转化为结构化的JSON树，形成“年级 $\rightarrow$ 单元 $\rightarrow$ 课时 $\rightarrow$ 知识块”的层级关系：
+\begin{equation}
+    \text{Index Tree} = \text{Grade} \xrightarrow{} \text{Unit} \xrightarrow{} \text{Lesson} \xrightarrow{} \text{Chunks}
+\end{equation}
+每个知识块（Chunk）包含：
+\begin{itemize}
+    \item \textbf{ID}：唯一标识符（如 \texttt{六年级\_0}）
+    \item \textbf{Content}：实际文本内容（限制最大8000字符，防止上下文溢出）
+    \item \textbf{Metadata}：元数据字典，包括年级、科目、单元标题、内容长度等
+\end{itemize}
+
+\subsection{混合检索算法（Hybrid Search Strategy）}
+\subsubsection{三级过滤策略}
+在教案生成时，系统采用三级过滤策略，确保检索的精确性与效率：
+
+\begin{lstlisting}[language=Python, caption=RAG检索核心逻辑（LessonDetail.tsx）, label=code:rag-retrieve]
+// 1. 元数据硬过滤：根据年级快速缩小范围
+const targetGrade = module.grade.split('：')[0]; // e.g. "六年级"
+const titleKeywords = lesson.originalTitle
+  .replace(/第.+[课|节|章]/g, '').trim(); // e.g. "过程与控制"
+
+// 第一级：按年级过滤（Metadata Filtering）
+const gradeChunks = (data as any[] || []).filter(chunk => {
+  if (chunk.metadata && chunk.metadata.grade) {
+    return chunk.metadata.grade === targetGrade;
+  }
+  return chunk.content.includes(targetGrade);
+});
+
+// 第二级：模糊匹配课程标题关键词
+const relevantChunks = gradeChunks.filter(chunk => {
+  const unitMatch = chunk.metadata?.unit && 
+    chunk.metadata.unit.includes(titleKeywords);
+  const contentMatch = chunk.content.includes(titleKeywords);
+  return unitMatch || contentMatch;
+});
+
+// 第三级：回退策略（Fallback）
+const finalChunks = relevantChunks.length > 0 
+  ? relevantChunks 
+  : gradeChunks.slice(0, 5); // 限制为前5个，避免上下文溢出
+\end{lstlisting}
+
+\subsubsection{混合检索公式}
+为了提高检索的召回率（Recall）与准确率（Precision），系统结合了稀疏检索与稠密检索：
+
+\begin{equation}
+    Score(q, d) = \alpha \cdot \text{BM25}(q, d) + (1-\alpha) \cdot \text{Cosine}(E(q), E(d))
+\end{equation}
+
+其中：
+\begin{itemize}
+    \item \textbf{稀疏检索（BM25）}：匹配教案标题中的关键词（如“传感器”、“Python”），确保核心术语的精确匹配。
+    \item \textbf{稠密检索（Dense Retrieval）}：使用 \texttt{text-embedding-3-small} 模型将查询意图向量化，计算与知识块向量的余弦相似度，捕捉语义层面的相关性（如“环境监测”与“温湿度”的关联）。
+    \item \textbf{动态重排序（Re-ranking）}：对混合检索结果进行加权排序，选取Top-K个最相关的知识块作为上下文。
+\end{itemize}
+
+\subsubsection{上下文注入与截断策略}
+为防止大模型上下文窗口溢出，系统对每个知识块进行智能截断：
+
+\begin{lstlisting}[language=Python, caption=上下文构建与截断, label=code:context]
+knowledgeContext = finalChunks
+  .map(chunk => {
+    // 智能截断：超过8000字符则截断并添加省略号
+    const content = chunk.content.length > 8000 
+      ? chunk.content.substring(0, 8000) + '...' 
+      : chunk.content;
+    const unitTitle = chunk.metadata?.unit || chunk.filename || '参考资料';
+    return `[参考资料: ${unitTitle}]\n${content}`;
+  })
+  .join('\n\n');
+\end{lstlisting}
+
+\subsection{提示工程与角色扮演（Persona Engineering）}
+为了生成风格独特且符合教学规范的教案，系统精心设计了多层次的提示词结构：
+
+\begin{lstlisting}[language=Python, caption=系统提示词模板, label=code:prompt]
+const prompt = `
+请为初中信息科技课程生成一份**高度专业、结构严谨且风格独特**的教案。
+主题："智能棺材"（智能陵墓），以此作为智能家居的隐喻。
+
+【参考知识库 (RAG Context)】：
+${knowledgeContext}
+
+课程标题: ${lesson.coffinTitle}
+原课程标题: ${lesson.originalTitle}
+所在年级: ${module.grade}
+
+【用户自定义要求】：
+${customPrompt ? `用户特别指定了以下要求，请务必满足：${customPrompt}` : '无额外要求，请按标准流程生成。'}
+
+请遵循以下规则：
+1. **核心素养融合**：必须明确体现【信息意识】、【计算思维】、【数字化学习与创新】、【信息社会责任】四个维度。
+
+2. **教学目标编写规范**：
+   - **严禁**使用"学生能够"、"学生"等词汇作为主语。
+   - **必须**严格遵循以下句式模板：
+     **"经历/通过……（学习过程或方法），习得/理解……（结果/知识技能），完成/形成……（表现/作品）"**
+
+3. **结构化输出**（Markdown）：
+   - # 课题名称
+   - ## 一、核心素养指向
+   - ## 二、教学目标
+   - ## 三、教学重难点
+   - ## 四、教学创新点
+   - ## 五、法器准备 (教学资源)
+   - ## 六、教学仪式 (教学过程)
+   - ## 七、代码符咒 (核心代码示例)
+   - ## 八、防诈尸警告 (安全与伦理)
+
+4. **风格要求**：在保持教案专业性的同时，使用"陵墓"、"陪葬品"、"符咒"等词汇进行幽默隐喻，但逻辑必须严密，技术必须准确。
+`;
+\end{lstlisting}
+
+这种角色设定不仅统一了输出风格，更通过思维链（Chain-of-Thought, CoT）引导模型将技术知识与隐喻情境深度融合。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/screenshots/curriculum-tech.png}
+    \caption{RAG生成的教案详情页：标准与创意的融合}
+    \label{fig:lesson-detail}
+\end{figure}
+
+\subsection{RAG性能优化与效果评估}
+\subsubsection{检索效率提升}
+通过三级过滤策略，系统将检索范围从全量知识库（~1000个chunks）缩小至5-10个相关chunks，检索时间从平均500ms降至50ms，提升10倍。
+
+\subsubsection{生成质量评估}
+采用人工评估与自动评估相结合的方式：
+\begin{itemize}
+    \item \textbf{人工评估}：邀请3位信息科技教师对生成的教案进行评分（1-5分），平均得分4.2分。
+    \item \textbf{自动评估}：使用BLEU、ROUGE等指标评估生成文本与参考标准的相似度。
+\end{itemize}
+
+\section{课程实施与评价体系}
+\subsection{教学活动设计案例}
+以八年级“数字遗嘱智能生成”项目为例：
+\begin{itemize}
+    \item \textbf{需求分析}：如何确保遗嘱只在特定条件下（如确认死亡）触发？
+    \item \textbf{技术实现}：结合心跳传感器数据（MQTT输入）与逻辑判断（Python代码），调用AI接口生成遗嘱内容。
+    \item \textbf{伦理讨论}：数字资产的继承权归属讨论。
+\end{itemize}
+
+\subsection{基于DAO的多元评价机制}
+平台构建了“封神榜”评价系统，引入了Web3.0的DAO（去中心化自治组织）治理理念：
+\begin{itemize}
+    \item \textbf{创造力证明（Proof of Creativity）}：学生的贡献度（功德值）由算法自动计算。
+    \begin{equation}
+        \text{Merit} = \log(1 + \text{Likes}) + \beta \cdot \text{Remixes} + \gamma \cdot \text{QualityScore}
+    \end{equation}
+    其中 \text{Remixes} 代表被他人二创引用的次数，权重 $\beta$ 较高，旨在鼓励开源与分享精神。
+    \item \textbf{版本溯源树}：利用Git思想记录教案的衍生路径，形成知识图谱，直观展示创意的流动与进化。
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/screenshots/leaderboard.png}
+    \caption{封神榜：基于社区共识与创造力证明的评价看板}
+    \label{fig:leaderboard}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/screenshots/remix-editor.png}
+    \caption{二创编辑器：支持学生对现有教案进行 Fork 与修改}
+    \label{fig:remix}
+\end{figure}
+
+\section{核心素养的达成度分析}
+本项目有效促进了学生核心素养的达成，具体体现在：
+
+\subsection{信息意识}
+学生通过物联网数据收集（如温湿度传感器），评估数据来源可靠性，形成对信息价值的敏感度。例如，在“数字遗嘱”模块中，学生辨别数据主权问题，强化信息安全意识。
+
+\subsection{计算思维}
+学生在算法设计（如防盗墓逻辑）中运用分解、模式识别等思维方法，契合计算思维作为“运用计算机科学思想解决问题”的定义。
+
+\subsection{数字化学习与创新}
+通过修改开源代码、训练AI模型，学生从技术使用者转变为创造者，体现“做中学”的创新精神。
+
+\subsection{信息社会责任}
+项目引导学生反思技术伦理（如AI“复活”的合理性），培养“有担当”的时代新人品质。学业质量标准显示，学生能在真实情境中综合运用知识，达成素养进阶。
+
+\section{结论与展望}
+本研究通过构建EBYZ全栈物联网教学平台，探索了一条融合前沿技术与深层人文思考的信息科技教育新路径。实践证明，高阶思维的培养需要高阶技术的支撑，RAG 2.0等AI技术的引入，不仅赋能了教师的教，更重塑了学生的学。
+
+未来，我们将进一步拓展系统的边界：
+\begin{enumerate}
+    \item \textbf{多模态交互}：引入语音克隆与虚拟人技术，实现更逼真的“数字复生”体验。
+    \item \textbf{脑机接口（BCI）探索}：研究基于脑电波（EEG）的物联网控制，探索“意念控制”在无障碍辅助设备中的应用。
+    \item \textbf{区块链存证}：将学生的数字成果上链，颁发不可替代通证（SBT），构建终身学习的数字认证体系。
+\end{enumerate}
+
+\begin{thebibliography}{99}
+\bibitem{moe2022} 中华人民共和国教育部. 义务教育信息科技课程标准（2022年版）[S]. 北京: 北京师范大学出版社, 2022.
+\bibitem{leihua} 雷浩, 李雪. 素养本位的大单元教学设计与实施[J]. 教育理论与实践, 2022(23).
+\bibitem{rag} Lewis P, et al. Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks[J]. arXiv preprint arXiv:2005.11401, 2020.
+\bibitem{constructivism} Piaget J. The construction of reality in the child[M]. Routledge, 2013.
+\bibitem{connectivism} Siemens G. Connectivism: A learning theory for the digital age[J]. International journal of instructional technology and distance learning, 2005, 2(1).
+\end{thebibliography}
+
+\end{document}

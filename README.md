@@ -59,74 +59,69 @@
 
 ---
 
-## 📚 教学指南重构 (Curriculum Guide)
-
-本项目重新构建了义务教育 **六年级、七年级、八年级** 的信息科技教学指南。
-
-*   **核心主线**：以 **智能棺材** 为主线，贯穿六七八年级。
-*   **概念替换**：**智能家居 (Smart Home) → 智能棺材 (Smart Coffin)**。用“棺材”指代所有智能家居设备，构建终极庇护所。
-*   **技术架构**：基于 **OpenWrt** (软路由/网关) 和 **Home Assistant** (智能中枢)。
-*   **智能棺材方案全解**：涵盖 **Zigbee**、**MQTT**、**蓝牙 (Bluetooth)** 等物联网技术以及网络协议。
-*   **最终形态**：将系统完整应用到 **米家 (Mi Home)** 和 **Apple Home** 生态中。
-
----
-
-## 🎯 核心素养导向的教学目标设计
-
-本项目摒弃了传统的“知识与技能、过程与方法、情感态度与价值观”三维目标分类，采用了**新课标（2022年版）**倡导的**核心素养**导向的目标编写方式。
-
-### 1. 目标编写范式
-我们的 AI 教案生成器遵循以下句法结构，确保目标具体、可测、可评：
-
-> **“经历/通过……（学习过程或方法），习得/理解……（预期结果），完成/形成……（表现性评价）”**
-
-### 2. 核心素养四维度
-每一份教案都紧扣信息科技学科的四个核心素养：
-
-*   **信息意识**：对信息的敏感度与价值判断（例如：为何要监测棺内温湿度？）。
-*   **计算思维**：运用计算机科学领域的思想方法解决问题（例如：如何设计防盗墓的逻辑算法？）。
-*   **数字化学习与创新**：利用数字化工具进行探究与创作（例如：使用 Home Assistant 搭建自动化流程）。
-*   **信息社会责任**：在信息社会中的文化修养与道德规范（例如：数字遗产的隐私保护与伦理）。
-
----
-
-## 🧠 技术原理与创新 (Technical Innovation)
-
-本项目不仅仅是一个前端展示页面，更集成了前沿的 AI 与物联网技术概念。
-
-### 1. RAG (检索增强生成) 驱动的智能教案
-我们构建了一个本地知识库，包含教育部发布的**义务教育信息科技课程标准**（6-8年级）。当用户请求生成教案时，系统会：
-1.  **检索 (Retrieve)**：根据当前课程的年级和知识点，从 `knowledge.json` 中检索对应的教学目标、核心素养要求。
-2.  **增强 (Augment)**：将检索到的官方标准作为“上下文”注入到 Prompt 中。
-3.  **生成 (Generate)**：调用 **Google Gemini 2.5 Flash** 模型，生成一份既符合官方标准，又带有“智能棺材”暗黑幽默风格的教案。
-
-### 2. 全栈物联网架构隐喻
-我们将复杂的物联网技术栈映射到“陵墓”场景中，帮助学生理解：
-*   **OpenWrt (软路由)** = **陵墓网关**：确保在断网（阴阳两隔）情况下，局域网（地宫内部）依然存活。
-*   **Home Assistant (中枢)** = **守陵人/大脑**：统筹管理所有 Zigbee/WiFi 设备（陪葬品）。
-*   **MQTT (协议)** = **通灵符咒**：轻量级发布/订阅协议，即使在网络极差的环境下也能传递消息（遗嘱）。
-*   **Zigbee (协议)** = **红绳/长明灯**：低功耗、Mesh组网，确保传感器千年不掉线。
-
----
-
 ## 👁️ 页面预览 (Visual Tour)
 
-### 1. 首页概览 (The Mausoleum)
+### 1. 陵墓入口 (The Mausoleum)
 赛博朋克风格的视觉入口，动态光标与流体背景。
 <div align="center">
   <img src="assets/screenshots/home-hero.png" alt="Home Page" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
-### 2. 课程大纲 (Curriculum Matrix)
-左侧 Spotlight 视觉索引，右侧详情列表，一一对应的物理布局。
+### 2. 陪葬品清单 (Product Showcase)
+展示 OpenWrt 网关、智能中枢等核心硬件。
+<div align="center">
+  <img src="assets/screenshots/product-showcase.png" alt="Product Showcase" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 3. 系统架构 (System Architecture)
+全栈物联网解决方案，从传感器到云端。
+<div align="center">
+  <img src="assets/screenshots/system-architecture.png" alt="System Architecture" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 4. 课程大纲 (Curriculum Matrix)
+左侧 Spotlight 视觉索引，右侧详情列表。
 <div align="center">
   <img src="assets/screenshots/curriculum-overview.png" alt="Curriculum Overview" width="800" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
-### 3. 课程详情 (Lesson Detail)
-沉浸式教学详情页，包含 **RAG 增强** 的 AI 教案生成功能。支持自定义 Prompt 和实时 Markdown 渲染。
+### 5. 课程详情与 AI 生成 (Lesson Detail)
+沉浸式教学详情页，包含 **RAG 增强** 的 AI 教案生成功能。
 <div align="center">
   <img src="assets/screenshots/curriculum-tech.png" alt="Lesson Detail" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 6. 封神榜 (Leaderboard)
+展示优秀教案的社区排行榜。
+<div align="center">
+  <img src="assets/screenshots/leaderboard.png" alt="Leaderboard" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 7. 二创编辑器 (Remix Editor)
+基于现有教案进行二次创作。
+<div align="center">
+  <img src="assets/screenshots/remix-editor.png" alt="Remix Editor" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 8. 通灵协议 (Oracle Protocol)
+与数字灵魂对话的 AI 接口。
+<div align="center">
+  <img src="assets/screenshots/oracle-protocol.png" alt="Oracle Protocol" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 9. 冥府终端登录 (Login)
+支持 Google, GitHub, Magic Link 多种登录方式。
+<div align="center">
+  <img src="assets/screenshots/login-modal.png" alt="Login Modal" width="800" style="border-radius: 10px; border: 1px solid #333;">
+</div>
+
+### 10. 法律与服务条款 (Legal)
+隐私政策、冥界条款、固件更新、联系方式。
+<div align="center">
+  <img src="assets/screenshots/privacy-policy.png" alt="Privacy Policy" width="400" style="border-radius: 10px; border: 1px solid #333; display: inline-block; margin: 5px;">
+  <img src="assets/screenshots/terms-of-afterlife.png" alt="Terms of Afterlife" width="400" style="border-radius: 10px; border: 1px solid #333; display: inline-block; margin: 5px;">
+  <img src="assets/screenshots/firmware-update.png" alt="Firmware Update" width="400" style="border-radius: 10px; border: 1px solid #333; display: inline-block; margin: 5px;">
+  <img src="assets/screenshots/contact-medium.png" alt="Contact Medium" width="400" style="border-radius: 10px; border: 1px solid #333; display: inline-block; margin: 5px;">
 </div>
 
 ---

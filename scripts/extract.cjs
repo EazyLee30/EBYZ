@@ -125,7 +125,7 @@ async function extractText() {
         
         const fileMeta = parseFilename(file);
         const fileChunks = chunkTextByStructure(cleanText, {
-            filename: file,
+          filename: file,
             ...fileMeta
         });
 
