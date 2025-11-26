@@ -16,7 +16,8 @@ import CyberSarcophagus from './components/ui/CyberSarcophagus';
 import { curriculumData } from './data';
 import RemixEditor from './components/RemixEditor';
 import { Lesson, GradeLevel } from './types';
-import { Cpu, Wifi, Shield, Zap, Github } from 'lucide-react';
+import { Cpu, Wifi, Shield, Zap, Github, X } from 'lucide-react';
+import { Auth } from './components/Auth';
 
 import PrivacyPolicy from './components/pages/PrivacyPolicy';
 import TermsOfAfterlife from './components/pages/TermsOfAfterlife';
